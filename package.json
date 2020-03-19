@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm run build && ls && npm run serve",
+    "start": "npm run serve",
     "serve": "node ./server.js",
     "web": "node scripts/start.js",
     "test:web": "node scripts/test.js",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@babel/core": "7.8.4",
+    "@react-native-community/eslint-config": "^0.0.5",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -26,10 +27,12 @@
     "babel-eslint": "10.0.3",
     "babel-jest": "^24.9.0",
     "babel-loader": "8.0.6",
+    "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-named-asset-import": "^0.3.6",
     "babel-preset-react-app": "^9.1.1",
     "camelcase": "^5.3.1",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
+    "chart.js": "^2.9.3",
     "compression": "^1.7.4",
     "css-loader": "3.4.2",
     "dotenv": "8.2.0",
@@ -52,6 +55,7 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
+    "metro-react-native-babel-preset": "^0.58.0",
     "mini-css-extract-plugin": "0.9.0",
     "morgan": "^1.9.1",
     "optimize-css-assets-webpack-plugin": "5.0.3",
@@ -63,6 +67,7 @@
     "postcss-safe-parser": "4.0.1",
     "react": "^16.13.0",
     "react-app-polyfill": "^1.0.6",
+    "react-chartjs-2": "^2.9.0",
     "react-dev-utils": "^10.2.0",
     "react-dom": "^16.13.0",
     "react-native": "0.61.5",
@@ -78,10 +83,7 @@
     "webpack": "4.41.5",
     "webpack-dev-server": "3.10.2",
     "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "metro-react-native-babel-preset": "^0.58.0"
+    "workbox-webpack-plugin": "4.3.1"
   },
   "devDependencies": {
     "@babel/runtime": "^7.6.2",
