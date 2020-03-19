@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm i && npm run build && npm run serve",
+    "start": "npm run build && ls && npm run serve",
     "serve": "node ./server.js",
     "web": "node scripts/start.js",
     "test:web": "node scripts/test.js",
