@@ -25,10 +25,10 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(express.static(path.resolve(__dirname, '../build')));
+app.use(express.static(path.resolve(__dirname, './build')));
 
 app.use('*', function(req, res) {
-  res.sendFile(path.resolve(__dirname, '../build/index.html'));
+  res.sendFile(path.resolve(__dirname, './build/index.html'));
 });
 
 const server = app.listen(port, function() {
