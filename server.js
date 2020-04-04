@@ -5,29 +5,6 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const Covid19 = require('covid19-json');
 
-const covid19 = new Covid19();
-
-// Get latest daily report
-function daily() {
-  return covid19.getData();
-}
-
-// Get specific day report (starting from 01-22-2020) * Format 'MM-DD-YYYY'
-// async function day() {
-//   let data = await covid19.getData('03-11-2020');
-//   // console.log('day: ', data);
-//   return data;
-// }
-
-// Get time series ('confirmed', 'deaths')
-function timeseries() {
-  return covid19.geTimeSeriesData('confirmed');
-}
-
-// daily();
-// day();
-// timeseries();
-
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
   // send entire app down. Process manager will restart it
@@ -76,13 +53,18 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(path.resolve(__dirname, './build')));
-app.get('/api', (req, res) => {
-  Promise.all([daily(), timeseries()]).then(([d, time]) => {
+app.use('/api', (req, res) => {
+  const covid19 = new Covid19();
+
+  return Promise.all([
+    covid19.getData(),
+    covid19.geTimeSeriesData('confirmed'),
+  ]).then(([d, time]) => {
     res.json({d, time});
   });
 });
 
-app.get('/*', function (req, res) {
+app.use('/*', function (req, res) {
   res.sendFile(path.resolve(__dirname, './build/index.html'));
 });
 

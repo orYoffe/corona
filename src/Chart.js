@@ -2,12 +2,26 @@ import React from 'react';
 import {Pie, Bar, Line} from 'react-chartjs-2';
 import {View} from 'react-native';
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 export const LineChart = ({data, legend}) => {
   return (
     <View style={{width: '100%'}}>
       <Line
         data={data}
         options={{
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  callback: function (value, index, values) {
+                    return numberWithCommas(value);
+                  },
+                },
+              },
+            ],
+          },
           title: {
             display: false,
             // text: data.datasets[0].label,
@@ -36,6 +50,17 @@ export const BarChart = ({data, colors}) => {
       <Bar
         data={data}
         options={{
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  callback: function (value, index, values) {
+                    return numberWithCommas(value);
+                  },
+                },
+              },
+            ],
+          },
           title: {
             display: false,
             // text: data.datasets[0].label,

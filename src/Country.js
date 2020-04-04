@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  ScrollView,
-  TextInput,
-} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {useParams} from 'react-router-dom';
 import {LineChart, BarChart} from './Chart';
 import state from './state';
@@ -27,7 +20,7 @@ const Country = () => {
   const [barData, setBarData] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [data, setCountryData] = useState(null);
-  console.log('--¯_(ツ)_/¯-----------country----------', country);
+
   useEffect(() => {
     const {countries, time} = state.state;
     const countryTimeData = time.countries.find((i) => i.country === country);
@@ -58,7 +51,7 @@ const Country = () => {
         const key = Object.keys(i)[0];
         return {y: key, x: i[key]};
       });
-      const format = (i) => (i.length < 2 ? `0${i}` : i);
+      const format = (i) => (i.length < 10 ? `0${i}` : i);
       const lineChartData = {
         labels: sets.map((i) => {
           const d = new Date(i.y);
@@ -79,7 +72,7 @@ const Country = () => {
       };
       setTimeData(lineChartData);
     }
-  }, []);
+  }, [country]);
 
   if (data === null) {
     return (

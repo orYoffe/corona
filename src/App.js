@@ -63,11 +63,11 @@ class App extends Component {
       labels: [],
       datasets: [],
     };
-    const format = (i) => (i.length < 2 ? `0${i}` : i);
+    const format = (i) => (i.length < 10 ? `0${i}` : i);
     const timeCountries = time.countries
       .sort((a, b) => b.locations[0].total - a.locations[0].total)
       .slice(0, 9);
-    console.log('--¯_(ツ)_/¯-----------timeCountries----------', timeCountries);
+
     timeCountries.forEach((countryTimeData, index) => {
       const sets = countryTimeData.locations[0].dates.map((i) => {
         const time = Object.keys(i)[0];
