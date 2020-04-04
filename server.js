@@ -77,9 +77,9 @@ app.use(function (req, res, next) {
 
 app.use(express.static(path.resolve(__dirname, './build')));
 app.get('/api', (req, res) => {
-  return Promise.all([daily(), timeseries()]).then((d, time) =>
-    res.json({d, time}),
-  );
+  Promise.all([daily(), timeseries()]).then(([d, time]) => {
+    res.json({d, time});
+  });
 });
 
 app.use('*', function (req, res) {
