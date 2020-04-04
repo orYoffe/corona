@@ -1,8 +1,8 @@
 import React from 'react';
-import {Pie, Doughnut, Bar, Line} from 'react-chartjs-2';
+import {Pie, Bar, Line} from 'react-chartjs-2';
 import {View} from 'react-native';
 
-export const LineChart = ({data}) => {
+export const LineChart = ({data, legend}) => {
   return (
     <View style={{width: '100%'}}>
       <Line
@@ -14,15 +14,23 @@ export const LineChart = ({data}) => {
             fontSize: 20,
           },
           legend: {
-            display: false,
-            position: 'right',
+            display: !!legend,
+            position: 'bottom',
           },
         }}
       />
     </View>
   );
 };
-const BarChart = ({data}) => {
+export const BarChart = ({data, colors}) => {
+  data.datasets[0].backgroundColor = colors;
+  data.datasets[0].hoverBackgroundColor = colors || [
+    '#501800',
+    '#4B5000',
+    '#175000',
+    '#003350',
+    '#35014F',
+  ];
   return (
     <View style={{width: '100%'}}>
       <Bar
@@ -42,7 +50,8 @@ const BarChart = ({data}) => {
     </View>
   );
 };
-const colors = [
+export const colors = [
+  '#000294',
   '#00429d',
   '#2e59a8',
   '#4771b2',

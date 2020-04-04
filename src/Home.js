@@ -7,7 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 import {Link} from 'react-router-dom';
-import Chart from './Chart';
+import Chart, {LineChart} from './Chart';
 import state from './state';
 
 function numberWithCommas(x) {
@@ -33,6 +33,7 @@ const updateSearch = (search = '') => {
 const Home = () => {
   const {
     lastUpdated,
+    lineChartData,
     allCases,
     allDeaths,
     allRecovered,
@@ -79,8 +80,16 @@ const Home = () => {
               <V t={lastUpdated.toDateString()} />
             </Text>
           </Box>
-          <View style={{width: '80%', marginBottom: 20}}>
+          <View
+            style={{
+              width: '80%',
+              marginBottom: 20,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Chart data={chartData} />
+            <LineChart data={lineChartData} />
           </View>
           <TextInput
             style={{

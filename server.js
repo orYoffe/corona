@@ -15,11 +15,11 @@ async function daily() {
 }
 
 // Get specific day report (starting from 01-22-2020) * Format 'MM-DD-YYYY'
-async function day() {
-  let data = await covid19.getData('01-22-2020');
-  // console.log('day: ', data);
-  return data;
-}
+// async function day() {
+//   let data = await covid19.getData('03-11-2020');
+//   // console.log('day: ', data);
+//   return data;
+// }
 
 // Get time series ('confirmed', 'deaths')
 async function timeseries() {

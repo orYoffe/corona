@@ -16,10 +16,19 @@ import {
 
 import {subscribe} from 'jstates-react';
 import Home from './Home';
+// import {colors} from './Chart';
 import Country from './Country';
 import getData from './api';
 import state from './state';
 
+const colors = [];
+while (colors.length < 100) {
+  let color;
+  do {
+    color = Math.floor(Math.random() * 100000000 + 1);
+  } while (colors.indexOf(color) >= 0);
+  colors.push('#' + ('000000' + color.toString(16)).slice(-6));
+}
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
@@ -50,6 +59,37 @@ class App extends Component {
         },
       ],
     };
+    const lineChartData = {
+      labels: [],
+      datasets: [],
+    };
+    const format = (i) => (i.length < 2 ? `0${i}` : i);
+    const timeCountries = time.countries
+      .sort((a, b) => b.locations[0].total - a.locations[0].total)
+      .slice(0, 9);
+    console.log('--¯_(ツ)_/¯-----------timeCountries----------', timeCountries);
+    timeCountries.forEach((countryTimeData, index) => {
+      const sets = countryTimeData.locations[0].dates.map((i) => {
+        const time = Object.keys(i)[0];
+        return {y: time, x: i[time]};
+      });
+      if (lineChartData.labels.length < 1) {
+        lineChartData.labels = sets.map((i) => {
+          const d = new Date(i.y);
+          const day = d.getDate();
+          const month = d.getMonth() + 1;
+
+          return `${format(day)}.${format(month)}`;
+        });
+      }
+      lineChartData.datasets.push({
+        label: countryTimeData.country,
+        backgroundColor: colors[index], //'rgba(75,192,192,1)',
+        borderColor: 'rgba(0,0,0,1)',
+        borderWidth: 2,
+        data: sets.map((i) => i.x),
+      });
+    });
 
     state.setState({
       lastUpdated: new Date(d.date),
@@ -60,6 +100,7 @@ class App extends Component {
       filteredCountries: countries,
       chartData,
       time,
+      lineChartData,
     });
   }
 

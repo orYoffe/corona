@@ -8,7 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import {useParams} from 'react-router-dom';
-import {LineChart} from './Chart';
+import {LineChart, BarChart} from './Chart';
 import state from './state';
 
 function numberWithCommas(x) {
@@ -24,22 +24,32 @@ const V = ({t}) => <Text style={styles.value}>{t}</Text>;
 
 const Country = () => {
   let {country} = useParams();
+  const [barData, setBarData] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [data, setCountryData] = useState(null);
   console.log('--¯_(ツ)_/¯-----------country----------', country);
   useEffect(() => {
     const {countries, time} = state.state;
-    console.log('--¯_(ツ)_/¯-----------countries----------', countries);
     const countryTimeData = time.countries.find((i) => i.country === country);
     const countryData = countries.find((i) => i.country === country);
-    console.log(
-      '--¯_(ツ)_/¯-----------countryTimeData----------',
-      countryTimeData,
-    );
     if (!countryData) {
       setCountryData(0);
     } else {
       setCountryData(countryData);
+      const {confirmed, recovered, deaths} = countryData;
+      const barChartData = {
+        labels: ['Total', 'Recovered', 'Deaths'],
+        datasets: [
+          {
+            label: country,
+            backgroundColor: 'rgba(75,192,192,1)',
+            borderColor: 'rgba(0,0,0,1)',
+            borderWidth: 2,
+            data: [confirmed, recovered, deaths],
+          },
+        ],
+      };
+      setBarData(barChartData);
     }
     if (!countryTimeData) {
       setTimeData(0);
@@ -49,7 +59,7 @@ const Country = () => {
         return {y: key, x: i[key]};
       });
       const format = (i) => (i.length < 2 ? `0${i}` : i);
-      const chartData = {
+      const lineChartData = {
         labels: sets.map((i) => {
           const d = new Date(i.y);
           const day = d.getDate();
@@ -67,7 +77,7 @@ const Country = () => {
           },
         ],
       };
-      setTimeData(chartData);
+      setTimeData(lineChartData);
     }
   }, []);
 
@@ -82,7 +92,6 @@ const Country = () => {
       />
     );
   }
-  console.log('--¯_(ツ)_/¯-----------timeData----------', timeData);
 
   return (
     <View style={styles.container}>
@@ -123,6 +132,10 @@ const Country = () => {
           {!!timeData && (
             <View style={{width: '80%', marginBottom: 20}}>
               <LineChart data={timeData} />
+              <BarChart
+                data={barData}
+                colors={['#ff2222', '#00ff00', '#ccc']}
+              />
             </View>
           )}
         </>
