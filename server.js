@@ -53,6 +53,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(path.resolve(__dirname, './build')));
+
 const covid19 = new Covid19();
 app.get('/api/data', (req, res) => {
   return Promise.all([
@@ -63,7 +64,7 @@ app.get('/api/data', (req, res) => {
   });
 });
 
-app.get('/*', function (req, res) {
+app.get('*', function (req, res) {
   res.sendFile(path.resolve(__dirname, './build/index.html'));
 });
 
