@@ -53,9 +53,8 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(path.resolve(__dirname, './build')));
+const covid19 = new Covid19();
 app.get('/api/data', (req, res) => {
-  const covid19 = new Covid19();
-
   return Promise.all([
     covid19.getData(),
     covid19.geTimeSeriesData('confirmed'),
