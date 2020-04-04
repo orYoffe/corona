@@ -1,16 +1,36 @@
 import React from 'react';
-import {Pie, Doughnut, Bar} from 'react-chartjs-2';
+import {Pie, Doughnut, Bar, Line} from 'react-chartjs-2';
 import {View} from 'react-native';
 
-const LineChart = ({data}) => {
+export const LineChart = ({data}) => {
+  return (
+    <View style={{width: '100%'}}>
+      <Line
+        data={data}
+        options={{
+          title: {
+            display: false,
+            // text: data.datasets[0].label,
+            fontSize: 20,
+          },
+          legend: {
+            display: false,
+            position: 'right',
+          },
+        }}
+      />
+    </View>
+  );
+};
+const BarChart = ({data}) => {
   return (
     <View style={{width: '100%'}}>
       <Bar
         data={data}
         options={{
           title: {
-            display: true,
-            text: data.datasets[0].label,
+            display: false,
+            // text: data.datasets[0].label,
             fontSize: 20,
           },
           legend: {
@@ -41,7 +61,6 @@ const colors = [
 //   } while (colors.indexOf(color) >= 0);
 //   colors.push('#' + ('000000' + color.toString(16)).slice(-6));
 // }
-console.log('------------colors.length------------', colors.length);
 const PieChart = ({data}) => {
   data.datasets[0].backgroundColor = colors;
   data.datasets[0].hoverBackgroundColor = [
@@ -88,10 +107,10 @@ const PieChart = ({data}) => {
     </View>
   );
 };
-const Chart = props => {
+const Chart = (props) => {
   return (
     <>
-      <LineChart {...props} />
+      <BarChart {...props} />
       <PieChart {...props} />
     </>
   );

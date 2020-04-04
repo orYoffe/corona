@@ -5,48 +5,39 @@ import {
   View,
   ActivityIndicator,
   ScrollView,
-  TextInput,
 } from 'react-native';
-import Chart from './Chart';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from 'react-router-dom';
+
+import {subscribe} from 'jstates-react';
+import Home from './Home';
+import Country from './Country';
+import getData from './api';
+import state from './state';
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-const Box = ({children, style}) => (
-  <View style={[styles.box, style]}>{children}</View>
-);
-
-const L = ({t}) => <Text style={styles.label}>{t}</Text>;
-const V = ({t}) => <Text style={styles.value}>{t}</Text>;
-
 class App extends Component {
-  state = {
-    lastUpdated: null,
-    search: '',
-  };
-
-  updateSearch = (search = '') => {
-    this.setState({search});
-    if (search.length) {
-      const filteredCountries = this.state.countries.filter(i =>
-        i.country.toLowerCase().includes(search.toLowerCase()),
-      );
-      this.setState({filteredCountries});
-    }
-  };
-
   async componentDidMount() {
-    const all = await fetch('https://corona.lmao.ninja/all').then(j =>
-      j.json(),
-    );
-    const countries = await fetch(
-      'https://corona.lmao.ninja/countries',
-    ).then(j => j.json());
+    const {d, time} = await getData();
+    console.log('--¯_(ツ)_/¯-----------d----------', d);
+    console.log('--¯_(ツ)_/¯-----------time----------', time);
 
-    const top10 = countries.slice(0, 9);
-    const labels = top10.map(i => i.country);
-    const data = top10.map(i => i.cases);
+    const countries = d.countries;
+
+    const top10 = countries
+      .sort((a, b) => b.confirmed - a.confirmed)
+      .slice(0, 9);
+
+    const labels = top10.map((i) => i.country);
+    const data = top10.map((i) => i.confirmed);
     const chartData = {
       labels,
       datasets: [
@@ -59,170 +50,76 @@ class App extends Component {
         },
       ],
     };
-    const dataActive = countries
-      .sort((a, b) => b.active - a.active)
-      .slice(0, 9);
-    const chartDataActive = {
-      labels: dataActive.map(i => i.country),
-      datasets: [
-        {
-          label: 'Active Cases per country',
-          backgroundColor: 'rgba(75,192,192,1)',
-          borderColor: 'rgba(0,0,0,1)',
-          borderWidth: 2,
-          data: dataActive.map(i => i.active),
-        },
-      ],
-    };
 
-    this.setState({
-      lastUpdated: new Date(all.updated),
-      allCases: numberWithCommas(all.cases),
-      allDeaths: numberWithCommas(all.deaths),
-      allRecovered: numberWithCommas(all.recovered),
+    state.setState({
+      lastUpdated: new Date(d.date),
+      allCases: numberWithCommas(d.confirmed),
+      allDeaths: numberWithCommas(d.deaths),
+      allRecovered: numberWithCommas(d.recovered),
       countries,
       filteredCountries: countries,
       chartData,
-      chartDataActive,
+      time,
     });
   }
 
   render() {
-    const {
-      lastUpdated,
-      allCases,
-      allDeaths,
-      allRecovered,
-      filteredCountries,
-      search,
-      chartData,
-      chartDataActive,
-    } = this.state;
+    const {lastUpdated} = state.state;
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.container}>
-          <Text style={[styles.title, {color: '#aaa'}]}>
-            COVID-19 data from https://corona.lmao.ninja
-          </Text>
-          {!lastUpdated ? (
-            <ActivityIndicator
-              size="large"
-              style={{
-                marginTop: 40,
-                alignSelf: 'center',
-              }}
-            />
-          ) : (
-            <>
-              <Box
+      <Router>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.container}>
+            <Text
+              accessibilityRole="link"
+              target="_blank"
+              href="https://github.com/CSSEGISandData/COVID-19"
+              style={[
+                styles.title,
+                {color: '#aaa', padding: 10, width: '100%'},
+              ]}>
+              COVID-19 data provided by Johns Hopkins CSSE
+            </Text>
+            {!lastUpdated ? (
+              <ActivityIndicator
+                size="large"
                 style={{
-                  borderBottomColor: '#fff',
-                  borderBottomStyle: 'solid',
-                  borderBottomWidth: 1,
-                }}>
-                <Text style={[styles.title, styles.text]}>Worldwide</Text>
-                <Text key={`Total cases: ${allCases}`} style={styles.text}>
-                  <L t="Total cases: " />
-                  <V t={allCases} />
-                </Text>
-                <Text key={`Total deaths: ${allDeaths}`} style={styles.text}>
-                  <L t="Total deaths: " />
-                  <V t={allDeaths} />
-                </Text>
-                <Text
-                  key={`Total recovered: ${allRecovered}`}
-                  style={styles.text}>
-                  <L t="Total recovered: " />
-                  <V t={allRecovered} />
-                </Text>
-                <Text
-                  key={`updated on: ${lastUpdated.toDateString()}`}
-                  style={styles.text}>
-                  <L t="Updated on: " />
-                  <V t={lastUpdated.toDateString()} />
-                  <L t=" | At: " />
-                  <V
-                    t={lastUpdated.getHours() + ':' + lastUpdated.getMinutes()}
-                  />
-                </Text>
-              </Box>
-              <View style={{width: '80%', marginBottom: 20}}>
-                <Chart data={chartData} />
-                <Chart data={chartDataActive} />
-              </View>
-              <TextInput
-                style={{
-                  height: 40,
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                  backgroundColor: '#ccc',
-                  width: '80%',
-                  borderRadius: 3,
-                  paddingLeft: 8,
-                  paddingRight: 8,
+                  marginTop: 40,
+                  alignSelf: 'center',
                 }}
-                placeholder="Type Country Name Here..."
-                onChangeText={this.updateSearch}
-                value={search || ''}
               />
-              <Box>
-                {filteredCountries.length < 1 ? (
-                  <Text style={[styles.title, styles.text]}>
-                    No counteries were found.. try another search term
-                  </Text>
-                ) : (
-                  filteredCountries.map(
-                    (
+            ) : (
+              <>
+                <Link to="/">
+                  <Text
+                    style={[
+                      styles.title,
                       {
-                        country,
-                        cases,
-                        todayCases,
-                        deaths,
-                        todayDeaths,
-                        recovered,
-                        active,
-                        critical,
-                        casesPerOneMillion,
+                        color: '#fff',
+                        padding: 10,
+                        width: '100%',
+                        backgroundColor: '#00429d',
+                        lineHeight: 35,
                       },
-                      index,
-                    ) => (
-                      <View key={index} style={styles.country}>
-                        <Text style={[styles.title, styles.text]}>
-                          {country}
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Cases:" /> <V t={numberWithCommas(cases)} />
-                          <L t=" | Today:" />{' '}
-                          <V t={numberWithCommas(todayCases)} />
-                          <L t=" | Active: " />
-                          <V t={numberWithCommas(active)} />
-                          <L t=" | Critical: " />
-                          <V t={numberWithCommas(critical)} />
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Deaths: " />
-                          <V t={numberWithCommas(deaths)} />
-                          <L t=" | Today: " />
-                          <V t={numberWithCommas(todayDeaths)} />
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Recovered: " />
-                          <V t={numberWithCommas(recovered)} />
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Cases per one million: " />
-                          <V t={casesPerOneMillion} />
-                        </Text>
-                      </View>
-                    ),
-                  )
-                )}
-              </Box>
-            </>
-          )}
-        </View>
-      </ScrollView>
+                    ]}>
+                    Go Back Home
+                  </Text>
+                </Link>
+
+                <Switch>
+                  <Route path="/country/:country">
+                    <Country />
+                  </Route>
+                  <Route path="/">
+                    <Home />
+                  </Route>
+                  <Redirect to="/" />
+                </Switch>
+              </>
+            )}
+          </View>
+        </ScrollView>
+      </Router>
     );
   }
 }
@@ -263,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default subscribe(App, [state]);
