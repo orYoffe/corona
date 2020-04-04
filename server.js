@@ -8,10 +8,8 @@ const Covid19 = require('covid19-json');
 const covid19 = new Covid19();
 
 // Get latest daily report
-async function daily() {
-  let data = await covid19.getData();
-  // console.log('daily: ', data);
-  return data;
+function daily() {
+  return covid19.getData();
 }
 
 // Get specific day report (starting from 01-22-2020) * Format 'MM-DD-YYYY'
@@ -22,10 +20,8 @@ async function daily() {
 // }
 
 // Get time series ('confirmed', 'deaths')
-async function timeseries() {
-  let data = await covid19.geTimeSeriesData('confirmed');
-  // console.log('timeseries: ', data);
-  return data;
+function timeseries() {
+  return covid19.geTimeSeriesData('confirmed');
 }
 
 // daily();
@@ -80,12 +76,10 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.static(path.resolve(__dirname, './build')));
-app.get('/api', async (req, res) => {
-  const d = await daily();
-  // const ondeDay = await day();
-  const time = await timeseries();
-
-  res.json({d, time});
+app.get('/api', (req, res) => {
+  return Promise.all([daily(), timeseries()]).then((d, time) =>
+    res.json({d, time}),
+  );
 });
 
 app.use('*', function (req, res) {
