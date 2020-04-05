@@ -58,7 +58,7 @@ const Country = () => {
       const format = (i) => (i < 10 ? `0${i}` : i);
       const lineChartData = {
         labels: sets.map((i) => {
-          const d = new Date(i.y);
+          const d = new Date(i.y.replace(/-/g, '/'));
           const day = d.getDate();
           const month = d.getMonth() + 1;
 

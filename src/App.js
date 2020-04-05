@@ -13,10 +13,8 @@ import {
   Link,
   Redirect,
 } from 'react-router-dom';
-
 import {subscribe} from 'jstates-react';
 import Home from './Home';
-// import {colors} from './Chart';
 import Country from './Country';
 import getData from './api';
 import state from './state';
@@ -90,7 +88,7 @@ class App extends Component {
       });
       if (lineChartData.labels.length < 1) {
         lineChartData.labels = sets.map((i) => {
-          const d = new Date(i.y);
+          const d = new Date(i.y.replace(/-/g, '/'));
           const day = d.getDate();
           const month = d.getMonth() + 1;
 
@@ -105,9 +103,8 @@ class App extends Component {
         data: sets.map((i) => i.x),
       });
     });
-
     state.setState({
-      lastUpdated: new Date(d.date),
+      lastUpdated: new Date(d.date.replace(/-/g, '/')),
       allCases: numberWithCommas(d.confirmed),
       allDeaths: numberWithCommas(d.deaths),
       allRecovered: numberWithCommas(d.recovered),
