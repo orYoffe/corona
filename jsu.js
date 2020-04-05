@@ -1,9 +1,23 @@
-'use strict';
-
 const moment = require('moment');
 const request = require('request');
 const csv = require('csvtojson');
-const db = require('quick.db');
+const objectToFile = require('object-to-file');
+
+var objectToFiledb = new objectToFile.default('testing-runkit');
+const db = {
+  fetch: async (key) => {
+    const r = await objectToFiledb.read(key);
+    return !r ? null : r;
+  },
+  set: async (key, data) => {
+    const r = await objectToFiledb.push(key, data);
+    return !r ? null : r;
+  },
+  delete: async (key) => {
+    const r = await objectToFiledb.delete(key);
+    return !r ? null : r;
+  },
+};
 
 class Covid19 {
   async getData(date) {
