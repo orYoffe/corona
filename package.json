@@ -3,11 +3,11 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "start": "npm run serve",
+    "start": "npm run builds && npm run serve",
     "serve": "node ./server.js",
     "web": "node scripts/start.js",
     "test:web": "node scripts/test.js",
-    "build": "node scripts/build.js",
+    "builds": "node scripts/build.js",
     "start:native": "react-native start",
     "start-clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm start -- --reset-cache",
     "test": "npm run test:web && npm run test:native",

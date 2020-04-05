@@ -52,9 +52,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(express.static(path.resolve(__dirname, './build')));
-
-const covid19 = new Covid19();
 app.post('/api/data', (req, res) => {
   return Promise.all([
     covid19.getData(),
@@ -63,6 +60,10 @@ app.post('/api/data', (req, res) => {
     res.json({d, time});
   });
 });
+
+app.use(express.static(path.resolve(__dirname, './build')));
+
+const covid19 = new Covid19();
 
 app.get('*', function (req, res) {
   res.sendFile(path.resolve(__dirname, './build/index.html'));
