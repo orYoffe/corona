@@ -3,7 +3,7 @@ const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Covid19 = require('covid19-json');
+const Covid19 = require('./jsu');
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
