@@ -6,8 +6,6 @@
 # testing
 /coverage
 
-# production
-/build
 
 # misc
 .DS_Store
@@ -47,7 +45,7 @@ project.xcworkspace
 
 # Android/IntelliJ
 #
-build/
+android/build/
 .idea
 .gradle
 local.properties
@@ -78,7 +76,6 @@ buck-out/
 
 coverage/
 coverageNative/
-build/
 temp.json
 android/app/app-release.apk
 .vscode
