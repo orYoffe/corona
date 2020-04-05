@@ -89,7 +89,7 @@ const Home = () => {
               alignItems: 'center',
             }}>
             <Chart data={chartData} />
-            <LineChart data={lineChartData} />
+            <LineChart data={lineChartData} legend />
           </View>
           <TextInput
             style={{

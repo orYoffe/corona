@@ -36,18 +36,10 @@ class Covid19 {
     var data = {};
     let date = moment().format('MM-DD-YYYY');
     type = type.toLowerCase();
-    //console.log(`Fetching data from: ${type}`)
     data = await db.fetch(type);
-    if (data === null) {
-      //console.log(`LOCAL data from ${type} not found...attempting to fetch REMOTE data from ${date}`)
+    if (data === null || (data && data.lastUpdated !== date)) {
       await this.addRemoteTimesSeries(type);
       data = await db.fetch(type);
-    } else {
-      if (data.lastUpdated !== date) {
-        //console.log(`LOCAL data from ${type} is not up to date...attempting to fetch latest REMOTE`)
-        await this.addRemoteTimesSeries(type);
-        data = await db.fetch(type);
-      }
     }
     return data;
   }
