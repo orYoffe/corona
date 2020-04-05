@@ -3,7 +3,7 @@ const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Covid19 = require('./jsu');
+// const Covid19 = require('./jsu');
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -18,6 +18,7 @@ const env = process.env.NODE_ENV || 'test';
 app.use(function (req, res, next) {
   if (process.env.NODE_ENV === 'production') {
     next();
+    return;
   }
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -52,18 +53,17 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post('/api/data', (req, res) => {
-  return Promise.all([
-    covid19.getData(),
-    covid19.geTimeSeriesData('confirmed'),
-  ]).then(([d, time]) => {
-    res.json({d, time});
-  });
-});
+// const covid19 = new Covid19();
+// app.post('/api/data', (req, res) => {
+//   return Promise.all([
+//     covid19.getData(),
+//     covid19.geTimeSeriesData('confirmed'),
+//   ]).then(([d, time]) => {
+//     res.json({d, time});
+//   });
+// });
 
 app.use(express.static(path.resolve(__dirname, './build')));
-
-const covid19 = new Covid19();
 
 app.get('*', function (req, res) {
   res.sendFile(path.resolve(__dirname, './build/index.html'));
