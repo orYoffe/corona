@@ -47,11 +47,15 @@ const Country = () => {
     if (!countryTimeData) {
       setTimeData(0);
     } else {
-      const sets = countryTimeData.locations[0].dates.map((i) => {
-        const key = Object.keys(i)[0];
-        return {y: key, x: i[key]};
+      const sets = countryTimeData.locations[0].dates.map((i, index) => {
+        let total = 0;
+        const time = Object.keys(i)[0];
+        countryTimeData.locations.forEach((location) => {
+          total += location.dates[index][time];
+        });
+        return {y: time, x: total};
       });
-      const format = (i) => (i.length < 10 ? `0${i}` : i);
+      const format = (i) => (i < 10 ? `0${i}` : i);
       const lineChartData = {
         labels: sets.map((i) => {
           const d = new Date(i.y);

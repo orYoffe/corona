@@ -7,14 +7,17 @@ function numberWithCommas(x) {
 }
 export const LineChart = ({data, legend}) => {
   return (
-    <View style={{width: '100%'}}>
+    <View style={{width: '100%', position: 'relative'}}>
       <Line
         data={data}
         options={{
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             yAxes: [
               {
                 ticks: {
+                  beginAtZero: true,
                   callback: function (value, index, values) {
                     return numberWithCommas(value);
                   },
@@ -24,7 +27,6 @@ export const LineChart = ({data, legend}) => {
           },
           title: {
             display: false,
-            // text: data.datasets[0].label,
             fontSize: 20,
           },
           legend: {
@@ -50,6 +52,8 @@ export const BarChart = ({data, colors}) => {
       <Bar
         data={data}
         options={{
+          responsive: true,
+          maintainAspectRatio: true,
           scales: {
             yAxes: [
               {

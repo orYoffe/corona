@@ -49,7 +49,7 @@ app.use(compression());
 app.post('/api/data', (req, res) => {
   return Promise.all([
     covid19.getData(),
-    covid19.geTimeSeriesData('confirmed'),
+    covid19.getTimeSeriesData('confirmed'),
   ]).then(([d, time]) => {
     res.json({d, time});
   });

@@ -43,7 +43,7 @@ class App extends Component {
 
     const top10 = countries
       .sort((a, b) => b.confirmed - a.confirmed)
-      .slice(0, 9);
+      .slice(0, 6);
 
     const labels = top10.map((i) => i.country);
     const data = top10.map((i) => i.confirmed);
@@ -63,15 +63,30 @@ class App extends Component {
       labels: [],
       datasets: [],
     };
-    const format = (i) => (i.length < 10 ? `0${i}` : i);
+    const format = (i) => (i < 10 ? `0${i}` : i);
     const timeCountries = time.countries
-      .sort((a, b) => b.locations[0].total - a.locations[0].total)
-      .slice(0, 9);
+      .sort((a, b) => {
+        let aTotal = 0;
+        let bTotal = 0;
+        a.locations.forEach((l) => {
+          aTotal += l.total;
+        });
+        b.locations.forEach((l) => {
+          bTotal += l.total;
+        });
+
+        return bTotal - aTotal;
+      })
+      .slice(0, 10);
 
     timeCountries.forEach((countryTimeData, index) => {
-      const sets = countryTimeData.locations[0].dates.map((i) => {
+      const sets = countryTimeData.locations[0].dates.map((i, index) => {
+        let total = 0;
         const time = Object.keys(i)[0];
-        return {y: time, x: i[time]};
+        countryTimeData.locations.forEach((location) => {
+          total += location.dates[index][time];
+        });
+        return {y: time, x: total};
       });
       if (lineChartData.labels.length < 1) {
         lineChartData.labels = sets.map((i) => {
@@ -84,9 +99,9 @@ class App extends Component {
       }
       lineChartData.datasets.push({
         label: countryTimeData.country,
-        backgroundColor: colors[index], //'rgba(75,192,192,1)',
-        borderColor: 'rgba(0,0,0,1)',
-        borderWidth: 2,
+        borderColor: colors[index],
+        fill: false,
+        borderWidth: 1,
         data: sets.map((i) => i.x),
       });
     });

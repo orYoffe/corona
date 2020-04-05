@@ -32,7 +32,7 @@ class Covid19 {
     return data;
   }
 
-  async geTimeSeriesData(type) {
+  async getTimeSeriesData(type) {
     var data = {};
     let date = moment().format('MM-DD-YYYY');
     type = type.toLowerCase();
@@ -208,7 +208,7 @@ class Covid19 {
 
   async addRemoteTimesSeries(type) {
     var countries = [];
-    let min = moment('2020-01-22');
+    let min = moment('2020-03-11');
     let max = moment();
     //let initCapType = type.charAt(0).toUpperCase() + type.slice(1)
     await csv()
