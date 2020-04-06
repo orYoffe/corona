@@ -18,6 +18,7 @@ const V = ({t}) => <Text style={styles.value}>{t}</Text>;
 const Country = () => {
   let {country} = useParams();
   const [barData, setBarData] = useState(null);
+  const [dailyInfections, setDailyInfections] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [data, setCountryData] = useState(null);
 
@@ -56,25 +57,41 @@ const Country = () => {
         return {y: time, x: total};
       });
       const format = (i) => (i < 10 ? `0${i}` : i);
-      const lineChartData = {
-        labels: sets.map((i) => {
-          const d = new Date(i.y.replace(/-/g, '/'));
-          const day = d.getDate();
-          const month = d.getMonth() + 1;
+      const labels = sets.map((i) => {
+        const d = new Date(i.y.replace(/-/g, '/'));
+        const day = d.getDate();
+        const month = d.getMonth() + 1;
 
-          return `${format(day)}.${format(month)}`;
-        }),
+        return `${format(day)}.${format(month)}`;
+      });
+      const lineChartData = {
+        labels,
         datasets: [
           {
             label: 'Confirmed Cases',
             backgroundColor: 'rgba(75,192,192,1)',
-            borderColor: 'rgba(0,0,0,1)',
             borderWidth: 2,
             data: sets.map((i) => i.x),
           },
         ],
       };
       setTimeData(lineChartData);
+      const daily = sets.map(
+        (i, index) =>
+          parseInt(i.x) - parseInt((sets[index - 1] && sets[index - 1].x) || 0),
+      );
+      const dailyInfectionsData = {
+        labels: labels.slice(1),
+        datasets: [
+          {
+            label: 'Daily Cases',
+            backgroundColor: '#d45757',
+            borderWidth: 2,
+            data: daily.slice(1),
+          },
+        ],
+      };
+      setDailyInfections(dailyInfectionsData);
     }
   }, [country]);
 
@@ -128,7 +145,8 @@ const Country = () => {
           </Box>
           {!!timeData && (
             <View style={{width: '80%', marginBottom: 20}}>
-              <LineChart data={timeData} />
+              <LineChart data={timeData} title />
+              {dailyInfections && <LineChart data={dailyInfections} title />}
               <BarChart
                 data={barData}
                 colors={['#ff2222', '#00ff00', '#ccc']}

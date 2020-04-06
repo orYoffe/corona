@@ -3,15 +3,24 @@ import {Pie, Bar, Line} from 'react-chartjs-2';
 import {View} from 'react-native';
 
 function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const s = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (x > 999) {
+    return `${s.slice(0, s.length - 4)}K`;
+  }
+  return s;
 }
-export const LineChart = ({data, legend}) => {
+export const LineChart = ({data, legend, title}) => {
   return (
     <View
       style={{marginTop: 20, height: 450, width: '100%', position: 'relative'}}>
       <Line
         data={data}
         options={{
+          title: {
+            display: !!title,
+            text: data.datasets[0].label,
+            fontSize: 20,
+          },
           responsive: true,
           maintainAspectRatio: false,
           scales: {
@@ -25,10 +34,6 @@ export const LineChart = ({data, legend}) => {
                 },
               },
             ],
-          },
-          title: {
-            display: false,
-            fontSize: 20,
           },
           legend: {
             display: !!legend,
@@ -55,7 +60,12 @@ export const BarChart = ({data, colors}) => {
   ];
   return (
     <View
-      style={{marginTop: 20, height: 450, width: '100%', position: 'relative'}}>
+      style={{
+        marginTop: 20,
+        height: '40vh',
+        width: '100%',
+        position: 'relative',
+      }}>
       <Bar
         data={data}
         options={{

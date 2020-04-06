@@ -18,15 +18,26 @@ import Home from './Home';
 import Country from './Country';
 import getData from './api';
 import state from './state';
-
-const colors = [];
-while (colors.length < 100) {
-  let color;
-  do {
-    color = Math.floor(Math.random() * 100000000 + 1);
-  } while (colors.indexOf(color) >= 0);
-  colors.push('#' + ('000000' + color.toString(16)).slice(-6));
-}
+const colors = [
+  '#ff0029',
+  '#377eb8',
+  '#7f80cd',
+  '#66a61e',
+  '#984ea3',
+  '#00d2d5',
+  '#ff7f00',
+  '#af8d00',
+  '#b3e900',
+  '#fec254',
+  '#ccebc5',
+  '#a63603',
+  '#016c59',
+  '#e7298a',
+  '#c994c7',
+  '#dfdf00',
+  '#df00df',
+  '#80ff80',
+];
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
