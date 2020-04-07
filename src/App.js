@@ -181,32 +181,10 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     width: '100%',
   },
-  box: {
-    margin: 10,
-    padding: 10,
-    width: '80%',
-  },
   title: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  text: {
-    color: '#fff',
-    marginBottom: 5,
-  },
-  country: {
-    width: '100%',
-    marginBottom: 10,
-    borderBottomColor: '#fff',
-    borderBottomStyle: 'solid',
-    borderBottomWidth: 1,
-  },
-  label: {
-    color: '#ddd',
-  },
-  Value: {
-    color: '#fff',
   },
 });
 

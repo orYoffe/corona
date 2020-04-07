@@ -1,1 +1,1 @@
-Corona count app [https://corona-count.herokuapp.com/](https://corona-count.herokuapp.com/)
+Corona count app [https://oryoffe.github.io/corona](https://oryoffe.github.io/corona)
