@@ -115,7 +115,7 @@ class App extends Component {
     const {lastUpdated} = state.state;
 
     return (
-      <Router basename={process.env.NODE_ENV === 'production' ? '/corona' : ''}>
+      <Router basename="/corona">
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.container}>
             <Text
