@@ -17,7 +17,7 @@ import {subscribe} from 'jstates-react';
 import Home from './Home';
 import Country from './Country';
 import {colors} from './Chart';
-import getData from './api';
+// import getData from './api';
 import state from './state';
 
 const Covid19 = require('./jsu');
