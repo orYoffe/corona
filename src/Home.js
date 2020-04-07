@@ -7,19 +7,8 @@ import {
   TextInput,
 } from 'react-native';
 import {Link} from 'react-router-dom';
-import Chart, {LineChart} from './Chart';
+import Chart, {LineChart, numberWithCommas, Box, L, V} from './Chart';
 import state from './state';
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-const Box = ({children, style}) => (
-  <View style={[styles.box, style]}>{children}</View>
-);
-
-const L = ({t}) => <Text style={styles.label}>{t}</Text>;
-const V = ({t}) => <Text style={styles.value}>{t}</Text>;
 
 const updateSearch = (search = '') => {
   state.setState({search});
@@ -150,11 +139,6 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     width: '100%',
   },
-  box: {
-    margin: 10,
-    padding: 10,
-    width: '80%',
-  },
   title: {
     color: '#fff',
     fontWeight: 'bold',
@@ -170,12 +154,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fff',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-  },
-  label: {
-    color: '#ddd',
-  },
-  Value: {
-    color: '#fff',
   },
 });
 

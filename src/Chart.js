@@ -1,6 +1,6 @@
 import React from 'react';
-import {Pie, Bar, Line} from 'react-chartjs-2';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
+import {Bar, Line} from 'react-chartjs-2';
 
 export const format = (i) => (i < 10 ? `0${i}` : i);
 export const colors = [
@@ -43,13 +43,45 @@ const logarithmicConfig = {
   },
 };
 
-function numberWithCommas(x) {
+export const Box = ({children, style}) => (
+  <View
+    style={[
+      {
+        margin: 10,
+        padding: 10,
+        width: '80%',
+      },
+      style,
+    ]}>
+    {children}
+  </View>
+);
+
+export const L = ({t}) => (
+  <Text
+    style={{
+      color: '#ddd',
+    }}>
+    {t}
+  </Text>
+);
+export const V = ({t}) => (
+  <Text
+    style={{
+      color: '#fff',
+    }}>
+    {t}
+  </Text>
+);
+
+export function numberWithCommas(x) {
   const s = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   if (x > 999) {
     return `${s.slice(0, s.length - 4)}K`;
   }
   return s;
 }
+
 export const LineChart = ({data, legend, title, logarithmic}) => {
   const options = {
     title: {
@@ -133,46 +165,46 @@ export const BarChart = ({data, colors: c}) => {
   );
 };
 
-const PieChart = ({data}) => {
-  data.datasets[0].backgroundColor = colors;
-  data.datasets[0].hoverBackgroundColor = colors;
-  return (
-    <View style={{width: '100%'}}>
-      <Pie
-        data={data}
-        options={{
-          title: {
-            display: false,
-            text: data.datasets[0].label,
-            fontSize: 16,
-          },
-          legend: {
-            display: false,
-          },
-          // legend: {
-          //   display: true,
-          //   position: 'right',
-          // },
-        }}
-      />
-      {/* 
-      <Doughnut
-        data={data}
-        options={{
-          title: {
-            display: true,
-            text: 'Corona cases per country',
-            fontSize: 20,
-          },
-          legend: {
-            display: true,
-            position: 'right',
-          },
-        }}
-      /> */}
-    </View>
-  );
-};
+// const PieChart = ({data}) => {
+//   data.datasets[0].backgroundColor = colors;
+//   data.datasets[0].hoverBackgroundColor = colors;
+//   return (
+//     <View style={{width: '100%'}}>
+//       <Pie
+//         data={data}
+//         options={{
+//           title: {
+//             display: false,
+//             text: data.datasets[0].label,
+//             fontSize: 16,
+//           },
+//           legend: {
+//             display: false,
+//           },
+//           // legend: {
+//           //   display: true,
+//           //   position: 'right',
+//           // },
+//         }}
+//       />
+//       {/*
+//       <Doughnut
+//         data={data}
+//         options={{
+//           title: {
+//             display: true,
+//             text: 'Corona cases per country',
+//             fontSize: 20,
+//           },
+//           legend: {
+//             display: true,
+//             position: 'right',
+//           },
+//         }}
+//       /> */}
+//     </View>
+//   );
+// };
 const Chart = (props) => {
   return (
     <>

@@ -15,7 +15,7 @@ import {
 } from 'react-router-dom';
 import {subscribe} from 'jstates-react';
 import Home from './Home';
-import {colors, format} from './Chart';
+import {colors, format, numberWithCommas} from './Chart';
 import state from './state';
 
 const Country = lazy(() => import('./Country'));
@@ -23,27 +23,15 @@ const Country = lazy(() => import('./Country'));
 
 const Covid19 = require('./jsu');
 const covid19 = new Covid19();
-Promise.all([covid19.getData(), covid19.getTimeSeriesData('confirmed')]);
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
 
 class App extends Component {
   async componentDidMount() {
-    // Promise.all([covid19.getData(), covid19.getTimeSeriesData('confirmed')])
-    //   .then(([d, time]) => {
-    //     console.log('--¯_(ツ)_/¯-----------d.json()----------', d.json());
-    //     console.log('--¯_(ツ)_/¯-----------time.json()----------', time.json());
-    //   });
     const [d, time] = await Promise.all([
       covid19.getData(),
       covid19.getTimeSeriesData('confirmed'),
     ]);
-    // const {d, time} = await getData();
     console.log('--¯_(ツ)_/¯-----------d----------', d);
     console.log('--¯_(ツ)_/¯-----------time----------', time);
-    // debugger;
 
     const countries = d.countries;
 
@@ -127,7 +115,7 @@ class App extends Component {
     const {lastUpdated} = state.state;
 
     return (
-      <Router>
+      <Router basename={process.env.NODE_ENV === 'production' ? '/corona' : ''}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.container}>
             <Text
@@ -168,7 +156,7 @@ class App extends Component {
 
                 <Switch>
                   <Route path="/country/:country">
-                    <Suspense>
+                    <Suspense fallback="Loading... ">
                       <Country />
                     </Suspense>
                   </Route>
