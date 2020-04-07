@@ -77,7 +77,17 @@ export const V = ({t}) => (
 export function numberWithCommas(x) {
   const s = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   if (x > 999) {
-    return `${s.slice(0, s.length - 4)}K`;
+    let decimal = '';
+    switch (s.slice(-3)) {
+      case '500':
+        decimal = '.5';
+        break;
+
+      default:
+        break;
+    }
+
+    return `${s.slice(0, s.length - 4)}${decimal}K`;
   }
   return s;
 }
