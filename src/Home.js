@@ -105,24 +105,57 @@ const Home = () => {
               </Text>
             ) : (
               filteredCountries.map(
-                ({country, confirmed, deaths, recovered}, index) => (
-                  <Link to={`country/${country}`} key={index}>
-                    <View style={styles.country}>
-                      <Text style={[styles.title, styles.text]}>{country}</Text>
-                      <Text style={styles.text}>
-                        <L t="Cases:" /> <V t={numberWithCommas(confirmed)} />
-                      </Text>
-                      <Text style={styles.text}>
-                        <L t="Deaths: " />
-                        <V t={numberWithCommas(deaths)} />
-                      </Text>
-                      <Text style={styles.text}>
-                        <L t="Recovered: " />
-                        <V t={numberWithCommas(recovered)} />
-                      </Text>
-                    </View>
-                  </Link>
-                ),
+                (
+                  {
+                    country,
+                    confirmed,
+                    deaths,
+                    recovered,
+                    population,
+                    precentage,
+                  },
+                  index,
+                ) => {
+                  if (!population) {
+                    console.log(
+                      '--¯_(ツ)_/¯-----------country----------',
+                      country,
+                    );
+                  }
+                  return (
+                    <Link to={`country/${country}`} key={index}>
+                      <View style={styles.country}>
+                        <Text style={[styles.title, styles.text]}>
+                          {country}
+                        </Text>
+                        <Text style={styles.text}>
+                          <L t="Cases:" /> <V t={numberWithCommas(confirmed)} />
+                        </Text>
+                        <Text style={styles.text}>
+                          <L t="Deaths: " />
+                          <V t={numberWithCommas(deaths)} />
+                        </Text>
+                        <Text style={styles.text}>
+                          <L t="Recovered: " />
+                          <V t={numberWithCommas(recovered)} />
+                        </Text>
+
+                        {!!population && (
+                          <Text style={styles.text}>
+                            <L t="Population: " />
+                            <V t={numberWithCommas(population)} />
+                          </Text>
+                        )}
+                        {!!precentage && (
+                          <Text style={styles.text}>
+                            <L t="Population infected: " />
+                            <V t={precentage + '%'} />
+                          </Text>
+                        )}
+                      </View>
+                    </Link>
+                  );
+                },
               )
             )}
           </Box>

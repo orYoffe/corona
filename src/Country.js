@@ -132,6 +132,18 @@ const Country = () => {
               <L t="Total recovered: " />
               <V t={numberWithCommas(data.recovered)} />
             </Text>
+            {!!data.population && (
+              <Text key={`population: ${data.population}`} style={styles.text}>
+                <L t="Population: " />
+                <V t={numberWithCommas(data.population)} />
+              </Text>
+            )}
+            {!!data.precentage && (
+              <Text key={`population: ${data.precentage}`} style={styles.text}>
+                <L t="Population infected: " />
+                <V t={data.precentage + '%'} />
+              </Text>
+            )}
             <Text
               key={`updated on: ${state.state.lastUpdated.toDateString()}`}
               style={styles.text}>

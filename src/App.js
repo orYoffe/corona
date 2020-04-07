@@ -19,21 +19,65 @@ import Home from './Home';
 import {colors, format, numberWithCommas} from './Chart';
 import state from './state';
 
-// import getData from './api';
-
 const Covid19 = require('./jsu');
 const covid19 = new Covid19();
 
 class App extends Component {
   async componentDidMount() {
-    const [d, time] = await Promise.all([
+    const [d, time, j] = await Promise.all([
       covid19.getData(),
       covid19.getTimeSeriesData('confirmed'),
+      fetch(
+        'https://data.opendatasoft.com/api/records/1.0/search/?dataset=world-population%40kapsarc&rows=10000&sort=year&facet=year&facet=country_name',
+      ).then((j) => j.json()),
     ]);
     console.log('--¯_(ツ)_/¯-----------d----------', d);
     console.log('--¯_(ツ)_/¯-----------time----------', time);
+    console.log('--¯_(ツ)_/¯-----------j----------', j);
+    const countryNamesExceptions = {
+      US: 'United States',
+      Iran: 'Iran, Islamic Rep.',
+      Russia: 'Russian Federation',
+      'Korea, South': 'Korea, Rep.',
+      Czechia: 'Czech Republic',
+      Egypt: 'Egypt, Arab Rep.',
+      Slovakia: 'Slovak Republic',
+      Kyrgyzstan: 'Kyrgyz Republic',
+      Venezuela: 'Venezuela, RB',
+      Brunei: 'Brunei Darussalam',
+      Gambia: 'Gambia, The',
+    };
+    const countries = d.countries.map((country) => {
+      const countryPopulations = j.records.filter((i) => {
+        const countryName = i.fields.country_name;
+        return (
+          countryName.toLowerCase() === country.country.toLowerCase() ||
+          countryName === countryNamesExceptions[country.country]
+        );
+      });
 
-    const countries = d.countries;
+      if (!countryPopulations.length) {
+        return country;
+      }
+      const countryPopulation = countryPopulations.sort(
+        (a, b) => b.fields.year - a.fields.year,
+      )[0];
+      if (!countryPopulation || !countryPopulation.fields.value) {
+        return country;
+      }
+      const newCountry = {
+        ...country,
+        population: countryPopulation.fields.value,
+      };
+      const perc = (
+        (country.confirmed / countryPopulation.fields.value) *
+        100
+      ).toFixed(2);
+      if (perc + '' !== '0.00') {
+        newCountry.precentage = perc;
+      }
+      return newCountry;
+    });
 
     const top10 = countries
       .sort((a, b) => b.confirmed - a.confirmed)

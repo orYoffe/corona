@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View} from 'react-native';
-import {Bar, Line} from 'react-chartjs-2';
+import {Bar, Line, Pie} from 'react-chartjs-2';
 
 export const format = (i) => (i < 10 ? `0${i}` : i);
 export const colors = [
@@ -74,11 +74,11 @@ export const V = ({t}) => (
   </Text>
 );
 
-export function numberWithCommas(x) {
+export function numberWithCommas(x, shouldRound) {
   const s = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  if (x > 999) {
+  if (shouldRound && x > 999) {
     let decimal = '';
-    if (s.length > 4 && s.slice(-3) !== '000') {
+    if (x < 2000 && s.length > 4 && s.slice(-3) !== '000') {
       decimal = `.${s.slice(-3)[0]}`;
     }
 
@@ -102,7 +102,7 @@ export const LineChart = ({data, legend, title, logarithmic}) => {
           ticks: {
             beginAtZero: true,
             callback: function (value, index, values) {
-              return numberWithCommas(value);
+              return numberWithCommas(value, true);
             },
           },
         },
@@ -149,7 +149,7 @@ export const BarChart = ({data, colors: c}) => {
               {
                 ticks: {
                   callback: function (value, index, values) {
-                    return numberWithCommas(value);
+                    return numberWithCommas(value, true);
                   },
                 },
               },
@@ -170,46 +170,46 @@ export const BarChart = ({data, colors: c}) => {
   );
 };
 
-// const PieChart = ({data}) => {
-//   data.datasets[0].backgroundColor = colors;
-//   data.datasets[0].hoverBackgroundColor = colors;
-//   return (
-//     <View style={{width: '100%'}}>
-//       <Pie
-//         data={data}
-//         options={{
-//           title: {
-//             display: false,
-//             text: data.datasets[0].label,
-//             fontSize: 16,
-//           },
-//           legend: {
-//             display: false,
-//           },
-//           // legend: {
-//           //   display: true,
-//           //   position: 'right',
-//           // },
-//         }}
-//       />
-//       {/*
-//       <Doughnut
-//         data={data}
-//         options={{
-//           title: {
-//             display: true,
-//             text: 'Corona cases per country',
-//             fontSize: 20,
-//           },
-//           legend: {
-//             display: true,
-//             position: 'right',
-//           },
-//         }}
-//       /> */}
-//     </View>
-//   );
-// };
+export const PieChart = ({data}) => {
+  data.datasets[0].backgroundColor = colors;
+  data.datasets[0].hoverBackgroundColor = colors;
+  return (
+    <View style={{width: '100%'}}>
+      <Pie
+        data={data}
+        options={{
+          title: {
+            display: false,
+            text: data.datasets[0].label,
+            fontSize: 16,
+          },
+          legend: {
+            display: false,
+          },
+          // legend: {
+          //   display: true,
+          //   position: 'right',
+          // },
+        }}
+      />
+      {/*
+      <Doughnut
+        data={data}
+        options={{
+          title: {
+            display: true,
+            text: 'Corona cases per country',
+            fontSize: 20,
+          },
+          legend: {
+            display: true,
+            position: 'right',
+          },
+        }}
+      /> */}
+    </View>
+  );
+};
 const Chart = (props) => {
   return (
     <>
