@@ -125,33 +125,56 @@ const Home = () => {
                   return (
                     <Link to={`country/${country}`} key={index}>
                       <View style={styles.country}>
-                        <Text style={[styles.title, styles.text]}>
-                          {country}
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Cases:" /> <V t={numberWithCommas(confirmed)} />
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Deaths: " />
-                          <V t={numberWithCommas(deaths)} />
-                        </Text>
-                        <Text style={styles.text}>
-                          <L t="Recovered: " />
-                          <V t={numberWithCommas(recovered)} />
-                        </Text>
+                        <View>
+                          <Text style={[styles.title, styles.text]}>
+                            {country}
+                          </Text>
+                          <Text style={styles.text}>
+                            <L t="Cases:" />{' '}
+                            <V t={numberWithCommas(confirmed)} />
+                          </Text>
+                          <Text style={styles.text}>
+                            <L t="Deaths: " />
+                            <V t={numberWithCommas(deaths)} />
+                          </Text>
+                          <Text style={styles.text}>
+                            <L t="Recovered: " />
+                            <V t={numberWithCommas(recovered)} />
+                          </Text>
 
-                        {!!population && (
-                          <Text style={styles.text}>
-                            <L t="Population: " />
-                            <V t={numberWithCommas(population)} />
-                          </Text>
-                        )}
-                        {!!precentage && (
-                          <Text style={styles.text}>
-                            <L t="Population infected: " />
-                            <V t={precentage + '%'} />
-                          </Text>
-                        )}
+                          {!!population && (
+                            <Text style={styles.text}>
+                              <L t="Population: " />
+                              <V t={numberWithCommas(population)} />
+                            </Text>
+                          )}
+                          {!!precentage && (
+                            <Text style={styles.text}>
+                              <L t="Population infected: " />
+                              <V t={precentage + '%'} />
+                            </Text>
+                          )}
+                        </View>
+                        <Text
+                          style={[
+                            {
+                              alignSelf: 'flex-end',
+                              color: '#fff',
+                              padding: 10,
+                              width: '100%',
+                              backgroundColor: '#00429d',
+                              lineHeight: 35,
+                              borderRadius: 3,
+                              textAlign: 'center',
+                              shadowColor: '#000',
+                              shadowOffset: {width: 0, height: 1},
+                              shadowOpacity: 0.8,
+                              shadowRadius: 2,
+                              elevation: 5,
+                            },
+                          ]}>
+                          See country stats
+                        </Text>
                       </View>
                     </Link>
                   );
@@ -182,11 +205,22 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   country: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     width: '100%',
     marginBottom: 10,
     borderBottomColor: '#fff',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
+    backgroundColor: 'darkcyan',
+    borderRadius: 3,
+    padding: 10,
+
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
 });
 
