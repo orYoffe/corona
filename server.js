@@ -41,7 +41,8 @@ app.use(function (req, res, next) {
 app.use(express.static(path.resolve(__dirname, './build')));
 
 app.get('/*', function (req, res) {
-  res.redirect(301, 'https://oryoffe.github.io/corona/');
+  // res.redirect(301, 'https://oryoffe.github.io/corona/');
+  res.sendFile(path.resolve(__dirname, './redirect.html'));
   // res.sendFile(path.resolve(__dirname, './build/index.html'));
 });
 
