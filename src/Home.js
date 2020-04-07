@@ -106,7 +106,7 @@ const Home = () => {
             ) : (
               filteredCountries.map(
                 ({country, confirmed, deaths, recovered}, index) => (
-                  <Link to={`/country/${country}`} key={index}>
+                  <Link to={`corona/country/${country}`} key={index}>
                     <View style={styles.country}>
                       <Text style={[styles.title, styles.text]}>{country}</Text>
                       <Text style={styles.text}>

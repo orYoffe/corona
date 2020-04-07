@@ -1,4 +1,4 @@
-import React, {Component, lazy, Suspense} from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,11 +14,11 @@ import {
   Redirect,
 } from 'react-router-dom';
 import {subscribe} from 'jstates-react';
+import Country from './Country';
 import Home from './Home';
 import {colors, format, numberWithCommas} from './Chart';
 import state from './state';
 
-const Country = lazy(() => import('./Country'));
 // import getData from './api';
 
 const Covid19 = require('./jsu');
@@ -154,17 +154,15 @@ class App extends Component {
                   </Text>
                 </Link>
 
-                <Suspense fallback={<Text>Loading... </Text>}>
-                  <Switch>
-                    <Route path="/country/:country">
-                      <Country />
-                    </Route>
-                    <Route path="/">
-                      <Home />
-                    </Route>
-                    <Redirect to="/" />
-                  </Switch>
-                </Suspense>
+                <Switch>
+                  <Route path="/country/:country">
+                    <Country />
+                  </Route>
+                  <Route path="/">
+                    <Home />
+                  </Route>
+                  <Redirect to="/" />
+                </Switch>
               </>
             )}
           </View>
