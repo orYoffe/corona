@@ -15,7 +15,7 @@ import {
 } from 'react-router-dom';
 import {subscribe} from 'jstates-react';
 import Home from './Home';
-import {colors} from './Chart';
+import {colors, format} from './Chart';
 import state from './state';
 
 const Country = lazy(() => import('./Country'));
@@ -69,7 +69,6 @@ class App extends Component {
       labels: [],
       datasets: [],
     };
-    const format = (i) => (i < 10 ? `0${i}` : i);
     const timeCountries = time.countries
       .sort((a, b) => {
         let aTotal = 0;

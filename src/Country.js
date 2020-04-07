@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {useParams} from 'react-router-dom';
-import {LineChart, BarChart} from './Chart';
+import {LineChart, BarChart, format} from './Chart';
 import state from './state';
 
 function numberWithCommas(x) {
@@ -56,7 +56,6 @@ const Country = () => {
         });
         return {y: time, x: total};
       });
-      const format = (i) => (i < 10 ? `0${i}` : i);
       const labels = sets.map((i) => {
         const d = new Date(i.y.replace(/-/g, '/'));
         const day = d.getDate();

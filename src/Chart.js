@@ -2,6 +2,7 @@ import React from 'react';
 import {Pie, Bar, Line} from 'react-chartjs-2';
 import {View} from 'react-native';
 
+export const format = (i) => (i < 10 ? `0${i}` : i);
 export const colors = [
   '#ff0029',
   '#377eb8',

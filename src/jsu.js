@@ -4,23 +4,23 @@ const csv = require('csvtojson');
 // const objectToFile = require('object-to-file');
 export const d = {};
 // var objectToFiledb = new objectToFile.default('testing-runkit');
-const db = {
-  fetch: async (key) => {
-    const r = localStorage.getItem(key);
-    // const r = await objectToFiledb.read(key);
-    return !r ? undefined : r;
-  },
-  set: async (key, data) => {
-    // const r = await objectToFiledb.push(key, data);
-    const r = localStorage.setItem(key, JSON.stringify(data));
-    return !r ? undefined : r;
-  },
-  delete: async (key) => {
-    const r = localStorage.removeItem(key);
-    // const r = await objectToFiledb.delete(key);
-    return !r ? undefined : r;
-  },
-};
+// const db = {
+//   fetch: async (key) => {
+//     const r = localStorage.getItem(key);
+//     // const r = await objectToFiledb.read(key);
+//     return !r ? undefined : r;
+//   },
+//   set: async (key, data) => {
+//     // const r = await objectToFiledb.push(key, data);
+//     const r = localStorage.setItem(key, JSON.stringify(data));
+//     return !r ? undefined : r;
+//   },
+//   delete: async (key) => {
+//     const r = localStorage.removeItem(key);
+//     // const r = await objectToFiledb.delete(key);
+//     return !r ? undefined : r;
+//   },
+// };
 
 class Covid19 {
   async getData(date) {

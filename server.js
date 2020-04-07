@@ -1,5 +1,5 @@
 const path = require('path');
-const compression = require('compression');
+// const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
 // const helmet = require('helmet');
@@ -31,16 +31,16 @@ app.use(morgan('dev'));
 //   });
 // });
 
-app.use(function (req, res, next) {
-  if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
-    res.setHeader('Cache-Control', 'build, max-age=3600');
-  }
-  next();
-});
+// app.use(function (req, res, next) {
+//   if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
+//     res.setHeader('Cache-Control', 'build, max-age=3600');
+//   }
+//   next();
+// });
 
-app.use(express.static(path.resolve(__dirname, './build')));
+// app.use(express.static(path.resolve(__dirname, './build')));
 
-app.get('/*', function (req, res) {
+app.use('/*', function (req, res) {
   // res.redirect(301, 'https://oryoffe.github.io/corona/');
   res.sendFile(path.resolve(__dirname, './redirect.html'));
   // res.sendFile(path.resolve(__dirname, './build/index.html'));
