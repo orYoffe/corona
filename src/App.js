@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, lazy, Suspense} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,10 +15,11 @@ import {
 } from 'react-router-dom';
 import {subscribe} from 'jstates-react';
 import Home from './Home';
-import Country from './Country';
 import {colors} from './Chart';
-// import getData from './api';
 import state from './state';
+
+const Country = lazy(() => import('./Country'));
+// import getData from './api';
 
 const Covid19 = require('./jsu');
 const covid19 = new Covid19();
@@ -168,7 +169,9 @@ class App extends Component {
 
                 <Switch>
                   <Route path="/country/:country">
-                    <Country />
+                    <Suspense>
+                      <Country />
+                    </Suspense>
                   </Route>
                   <Route path="/">
                     <Home />

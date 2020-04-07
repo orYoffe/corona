@@ -2,7 +2,7 @@ const path = require('path');
 const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const cors = require('cors');
 // const Covid19 = require('./src/jsu');
 
@@ -18,9 +18,9 @@ const port = process.env.PORT || 5000;
 const env = process.env.NODE_ENV || 'test';
 
 app.use(cors());
-app.use(helmet());
+// app.use(helmet());
 app.use(morgan('dev'));
-app.use(compression());
+// app.use(compression());
 
 // app.post('/api/data', (req, res) => {
 //   return Promise.all([
