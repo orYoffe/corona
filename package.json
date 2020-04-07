@@ -7,7 +7,7 @@
     "serve": "node ./server.js",
     "web": "node scripts/start.js",
     "test:web": "node scripts/test.js",
-    "builds": "node scripts/build.js",
+    "build": "node scripts/build.js && rm -rf ./docs/* && cp -R ./build/. ./docs/",
     "start:native": "react-native start",
     "start-clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm start -- --reset-cache",
     "test": "npm run test:web && npm run test:native",
@@ -25,6 +25,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
+    "axios": "^0.19.2",
     "babel-eslint": "10.0.3",
     "babel-jest": "^24.9.0",
     "babel-loader": "8.0.6",
@@ -161,5 +162,6 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ]
-  }
+  },
+  "homepage": "https://oryoffe.github.io/corona/"
 }

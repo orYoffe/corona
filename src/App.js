@@ -16,37 +16,33 @@ import {
 import {subscribe} from 'jstates-react';
 import Home from './Home';
 import Country from './Country';
+import {colors} from './Chart';
 import getData from './api';
 import state from './state';
-const colors = [
-  '#ff0029',
-  '#377eb8',
-  '#7f80cd',
-  '#66a61e',
-  '#984ea3',
-  '#00d2d5',
-  '#ff7f00',
-  '#af8d00',
-  '#b3e900',
-  '#fec254',
-  '#ccebc5',
-  '#a63603',
-  '#016c59',
-  '#e7298a',
-  '#c994c7',
-  '#dfdf00',
-  '#df00df',
-  '#80ff80',
-];
+
+const Covid19 = require('./jsu');
+const covid19 = new Covid19();
+Promise.all([covid19.getData(), covid19.getTimeSeriesData('confirmed')]);
+
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 class App extends Component {
   async componentDidMount() {
-    const {d, time} = await getData();
+    // Promise.all([covid19.getData(), covid19.getTimeSeriesData('confirmed')])
+    //   .then(([d, time]) => {
+    //     console.log('--¯_(ツ)_/¯-----------d.json()----------', d.json());
+    //     console.log('--¯_(ツ)_/¯-----------time.json()----------', time.json());
+    //   });
+    const [d, time] = await Promise.all([
+      covid19.getData(),
+      covid19.getTimeSeriesData('confirmed'),
+    ]);
+    // const {d, time} = await getData();
     console.log('--¯_(ツ)_/¯-----------d----------', d);
     console.log('--¯_(ツ)_/¯-----------time----------', time);
+    // debugger;
 
     const countries = d.countries;
 

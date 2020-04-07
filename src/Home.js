@@ -28,6 +28,8 @@ const updateSearch = (search = '') => {
       i.country.toLowerCase().includes(search.toLowerCase()),
     );
     state.setState({filteredCountries});
+  } else {
+    state.setState({filteredCountries: state.state.countries});
   }
 };
 const Home = () => {
@@ -90,6 +92,7 @@ const Home = () => {
             }}>
             <Chart data={chartData} />
             <LineChart data={lineChartData} legend />
+            {/* <LineChart data={lineChartData} legend logarithmic /> */}
           </View>
           <TextInput
             style={{

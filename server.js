@@ -3,9 +3,9 @@ const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const Covid19 = require('./jsu');
+// const Covid19 = require('./src/jsu');
 
-const covid19 = new Covid19();
+// const covid19 = new Covid19();
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -46,14 +46,14 @@ app.use(helmet());
 app.use(morgan('dev'));
 app.use(compression());
 
-app.post('/api/data', (req, res) => {
-  return Promise.all([
-    covid19.getData(),
-    covid19.getTimeSeriesData('confirmed'),
-  ]).then(([d, time]) => {
-    res.json({d, time});
-  });
-});
+// app.post('/api/data', (req, res) => {
+//   return Promise.all([
+//     covid19.getData(),
+//     covid19.getTimeSeriesData('confirmed'),
+//   ]).then(([d, time]) => {
+//     res.json({d, time});
+//   });
+// });
 
 app.use(function (req, res, next) {
   if (req.url.match(/^\/(css|js|img|font)\/.+/)) {

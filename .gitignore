@@ -5,7 +5,7 @@
 
 # testing
 /coverage
-
+/build/
 
 # misc
 .DS_Store
@@ -45,7 +45,7 @@ project.xcworkspace
 
 # Android/IntelliJ
 #
-android/build/
+build/
 .idea
 .gradle
 local.properties
