@@ -154,17 +154,17 @@ class App extends Component {
                   </Text>
                 </Link>
 
-                <Switch>
-                  <Route path="/country/:country">
-                    <Suspense fallback="Loading... ">
+                <Suspense fallback={<Text>Loading... </Text>}>
+                  <Switch>
+                    <Route path="/country/:country">
                       <Country />
-                    </Suspense>
-                  </Route>
-                  <Route path="/">
-                    <Home />
-                  </Route>
-                  <Redirect to="/" />
-                </Switch>
+                    </Route>
+                    <Route path="/">
+                      <Home />
+                    </Route>
+                    <Redirect to="/" />
+                  </Switch>
+                </Suspense>
               </>
             )}
           </View>
