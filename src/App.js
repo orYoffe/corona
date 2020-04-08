@@ -218,7 +218,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#282c34',
+    backgroundColor: '#222222',
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',

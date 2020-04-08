@@ -169,7 +169,6 @@ const Country = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#282c34',
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',

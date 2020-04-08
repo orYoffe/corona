@@ -9,6 +9,7 @@ import {
 import {Link} from 'react-router-dom';
 import Chart, {LineChart, numberWithCommas, Box, L, V} from './Chart';
 import state from './state';
+import Map from './Map';
 
 const updateSearch = (search = '') => {
   state.setState({search});
@@ -83,6 +84,7 @@ const Home = () => {
             <LineChart data={lineChartData} legend />
             {/* <LineChart data={lineChartData} legend logarithmic /> */}
           </View>
+          <Map />
           <TextInput
             style={{
               height: 40,
@@ -116,12 +118,12 @@ const Home = () => {
                   },
                   index,
                 ) => {
-                  if (!population) {
-                    console.log(
-                      '--¯_(ツ)_/¯-----------country----------',
-                      country,
-                    );
-                  }
+                  // if (!population) {
+                  //   console.log(
+                  //     '--¯_(ツ)_/¯-----------country----------',
+                  //     country,
+                  //   );
+                  // }
                   return (
                     <Link to={`country/${country}`} key={index}>
                       <View style={styles.country}>
@@ -190,7 +192,6 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#282c34',
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',
