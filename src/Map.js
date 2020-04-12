@@ -3,6 +3,8 @@ import {View} from 'react-native';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {divIcon} from 'leaflet';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
+
+import {subscribe} from 'jstates-react';
 import state from './state';
 import {numberWithCommas} from './Chart';
 
@@ -83,8 +85,8 @@ class Mapx extends Component {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
-          {!!state.state.countries &&
-            state.state.countries.map((data) => {
+          {!!this.props.countries &&
+            this.props.countries.map((data) => {
               const {
                 country,
                 confirmed,
@@ -232,4 +234,6 @@ class Mapx extends Component {
     );
   }
 }
-export default Mapx;
+export default subscribe(Mapx, state, (state) => ({
+  countries: state.countries,
+}));

@@ -156,7 +156,7 @@ class App extends Component {
   }
 
   render() {
-    const {lastUpdated} = state.state;
+    const {lastUpdated} = this.props;
 
     return (
       <Router basename="/corona">
@@ -230,4 +230,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default subscribe(App, [state]);
+export default subscribe(App, state, (state) => ({
+  lastUpdated: state.lastUpdated,
+}));

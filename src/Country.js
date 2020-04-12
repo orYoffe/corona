@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {useParams} from 'react-router-dom';
+import {subscribe} from 'jstates-react';
 import {
   LineChart,
   BarChart,
@@ -12,7 +13,7 @@ import {
 } from './Chart';
 import state from './state';
 
-const Country = () => {
+const Country = (props) => {
   let {country} = useParams();
   const [barData, setBarData] = useState(null);
   const [dailyInfections, setDailyInfections] = useState(null);
@@ -20,7 +21,7 @@ const Country = () => {
   const [data, setCountryData] = useState(null);
 
   useEffect(() => {
-    const {countries, time} = state.state;
+    const {countries, time} = state.getState();
     const countryTimeData = time.countries.find((i) => i.country === country);
     const countryData = countries.find((i) => i.country === country);
     if (!countryData) {
@@ -145,10 +146,10 @@ const Country = () => {
               </Text>
             )}
             <Text
-              key={`updated on: ${state.state.lastUpdated.toDateString()}`}
+              key={`updated on: ${props.lastUpdated.toDateString()}`}
               style={styles.text}>
               <L t="Updated on: " />
-              <V t={state.state.lastUpdated.toDateString()} />
+              <V t={props.lastUpdated.toDateString()} />
             </Text>
           </Box>
           {!!timeData && (
@@ -191,4 +192,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Country;
+export default subscribe(Country, state, (state) => ({
+  lastUpdated: state.lastUpdated,
+}));

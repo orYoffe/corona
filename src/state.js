@@ -1,6 +1,6 @@
-import {State} from 'jstates-react';
+import {createState} from 'jstates-react';
 
-const state = new State('state', {
+const state = createState({
   lastUpdated: null,
   search: '',
 });

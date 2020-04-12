@@ -14,12 +14,14 @@ import Map from './Map';
 const updateSearch = (search = '') => {
   state.setState({search});
   if (search.length) {
-    const filteredCountries = state.state.countries.filter((i) =>
-      i.country.toLowerCase().includes(search.toLowerCase()),
-    );
+    const filteredCountries = state
+      .getState()
+      .countries.filter((i) =>
+        i.country.toLowerCase().includes(search.toLowerCase()),
+      );
     state.setState({filteredCountries});
   } else {
-    state.setState({filteredCountries: state.state.countries});
+    state.setState({filteredCountries: state.getState().countries});
   }
 };
 const Home = () => {
@@ -32,7 +34,7 @@ const Home = () => {
     filteredCountries,
     search,
     chartData,
-  } = state.state;
+  } = state.getState();
 
   return (
     <View style={styles.container}>
