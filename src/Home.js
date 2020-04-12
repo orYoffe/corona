@@ -48,6 +48,7 @@ const Home = () => {
         />
       ) : (
         <>
+          <Map />
           <Box
             style={{
               borderBottomColor: '#fff',
@@ -86,7 +87,6 @@ const Home = () => {
             <LineChart data={lineChartData} legend />
             {/* <LineChart data={lineChartData} legend logarithmic /> */}
           </View>
-          <Map />
           <TextInput
             style={{
               height: 40,

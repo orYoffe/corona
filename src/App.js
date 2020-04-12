@@ -10,7 +10,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from 'react-router-dom';
 import {subscribe} from 'jstates-react';
@@ -181,33 +180,15 @@ class App extends Component {
                 }}
               />
             ) : (
-              <>
-                <Link to="/">
-                  <Text
-                    style={[
-                      styles.title,
-                      {
-                        color: '#fff',
-                        padding: 10,
-                        width: '100%',
-                        backgroundColor: '#00429d',
-                        lineHeight: 35,
-                      },
-                    ]}>
-                    Go Back Home
-                  </Text>
-                </Link>
-
-                <Switch>
-                  <Route path="/country/:country">
-                    <Country />
-                  </Route>
-                  <Route path="/">
-                    <Home />
-                  </Route>
-                  <Redirect to="/" />
-                </Switch>
-              </>
+              <Switch>
+                <Route path="/country/:country">
+                  <Country />
+                </Route>
+                <Route path="/">
+                  <Home />
+                </Route>
+                <Redirect to="/" />
+              </Switch>
             )}
           </View>
         </ScrollView>

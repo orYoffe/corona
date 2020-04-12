@@ -80,7 +80,7 @@ class Mapx extends Component {
           onzoomend={this.handleZoom}
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
-          style={{width: '100%', position: 'relative', height: 590}}>
+          style={{width: '100%', position: 'relative', height: 400}}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"

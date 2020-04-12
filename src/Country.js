@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
-import {useParams} from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 import {subscribe} from 'jstates-react';
 import {
   LineChart,
@@ -106,6 +106,21 @@ const Country = (props) => {
 
   return (
     <View style={styles.container}>
+      <Link to="/">
+        <Text
+          style={[
+            styles.title,
+            {
+              color: '#fff',
+              padding: 10,
+              width: '100%',
+              backgroundColor: '#00429d',
+              lineHeight: 35,
+            },
+          ]}>
+          Go to main page
+        </Text>
+      </Link>
       {data === 0 ? (
         <Text style={[styles.title, styles.text]}>
           No country by the name {country} was found
