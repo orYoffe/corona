@@ -15,11 +15,47 @@ import {
 import {subscribe} from 'jstates-react';
 import Country from './Country';
 import Home from './Home';
-import {colors, format, numberWithCommas} from './Chart';
+import {generateBarData, numberWithCommas, colors, format} from './utils';
 import state from './state';
 
 const Covid19 = require('./jsu');
 const covid19 = new Covid19();
+
+const getLineChartData = (timeCountries) => {
+  const lineChartData = {
+    labels: [],
+    datasets: [],
+  };
+
+  timeCountries.forEach((countryTimeData, index) => {
+    const sets = countryTimeData.locations[0].dates.map((i, index) => {
+      let total = 0;
+      const time = Object.keys(i)[0];
+      countryTimeData.locations.forEach((location) => {
+        total += location.dates[index][time];
+      });
+      return {y: time, x: total};
+    });
+    if (lineChartData.labels.length < 1) {
+      lineChartData.labels = sets.map((i) => {
+        const d = new Date(i.y.replace(/-/g, '/'));
+        const day = d.getDate();
+        const month = d.getMonth() + 1;
+
+        return `${format(day)}.${format(month)}`;
+      });
+    }
+    lineChartData.datasets.push({
+      label: countryTimeData.country,
+      borderColor: colors[index],
+      fill: false,
+      borderWidth: 1,
+      data: sets.map((i) => i.x),
+    });
+  });
+
+  return lineChartData;
+};
 
 class App extends Component {
   async componentDidMount() {
@@ -78,28 +114,6 @@ class App extends Component {
       return newCountry;
     });
 
-    const top10 = countries
-      .sort((a, b) => b.confirmed - a.confirmed)
-      .slice(0, 6);
-
-    const labels = top10.map((i) => i.country);
-    const data = top10.map((i) => i.confirmed);
-    const chartData = {
-      labels,
-      datasets: [
-        {
-          label: 'Cases per country',
-          backgroundColor: 'rgba(75,192,192,1)',
-          borderColor: 'rgba(0,0,0,1)',
-          borderWidth: 2,
-          data,
-        },
-      ],
-    };
-    const lineChartData = {
-      labels: [],
-      datasets: [],
-    };
     const timeCountries = time.countries
       .sort((a, b) => {
         let aTotal = 0;
@@ -114,33 +128,9 @@ class App extends Component {
         return bTotal - aTotal;
       })
       .slice(0, 10);
+    const chartData = generateBarData(countries);
+    const lineChartData = getLineChartData(timeCountries);
 
-    timeCountries.forEach((countryTimeData, index) => {
-      const sets = countryTimeData.locations[0].dates.map((i, index) => {
-        let total = 0;
-        const time = Object.keys(i)[0];
-        countryTimeData.locations.forEach((location) => {
-          total += location.dates[index][time];
-        });
-        return {y: time, x: total};
-      });
-      if (lineChartData.labels.length < 1) {
-        lineChartData.labels = sets.map((i) => {
-          const d = new Date(i.y.replace(/-/g, '/'));
-          const day = d.getDate();
-          const month = d.getMonth() + 1;
-
-          return `${format(day)}.${format(month)}`;
-        });
-      }
-      lineChartData.datasets.push({
-        label: countryTimeData.country,
-        borderColor: colors[index],
-        fill: false,
-        borderWidth: 1,
-        data: sets.map((i) => i.x),
-      });
-    });
     state.setState({
       lastUpdated: new Date(d.date.replace(/-/g, '/')),
       allCases: numberWithCommas(d.confirmed),
@@ -167,7 +157,12 @@ class App extends Component {
               href="https://github.com/CSSEGISandData/COVID-19"
               style={[
                 styles.title,
-                {color: '#aaa', padding: 10, width: '100%'},
+                {
+                  color: '#aaa',
+                  padding: 10,
+                  width: '100%',
+                  textAlign: 'center',
+                },
               ]}>
               COVID-19 data provided by Johns Hopkins CSSE
             </Text>

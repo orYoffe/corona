@@ -6,7 +6,7 @@ import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 
 import {subscribe} from 'jstates-react';
 import state from './state';
-import {numberWithCommas} from './Chart';
+import {numberWithCommas} from './utils';
 
 function averageGeolocation(coords) {
   if (coords.length === 1) {
@@ -69,13 +69,13 @@ class Mapx extends Component {
     return (
       <View
         style={{
-          width: '90%',
+          width: '100%',
           position: 'relative',
           marginBottom: 20,
           marginTop: 20,
         }}>
         <Map
-          minZoom={2}
+          minZoom={1}
           ref={this.mapRef}
           onzoomend={this.handleZoom}
           center={[this.state.lat, this.state.lng]}

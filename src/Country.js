@@ -2,15 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {useParams, Link} from 'react-router-dom';
 import {subscribe} from 'jstates-react';
-import {
-  LineChart,
-  BarChart,
-  format,
-  numberWithCommas,
-  Box,
-  L,
-  V,
-} from './Chart';
+import {LineChart, BarChart} from './Chart';
+import {format, numberWithCommas, Box, L, V} from './utils';
 import state from './state';
 
 const Country = (props) => {

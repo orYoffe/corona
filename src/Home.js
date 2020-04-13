@@ -6,23 +6,48 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
+import {subscribe} from 'jstates-react';
 import {Link} from 'react-router-dom';
-import Chart, {LineChart, numberWithCommas, Box, L, V} from './Chart';
+import Chart, {LineChart} from './Chart';
 import state from './state';
 import Map from './Map';
+import DropDown from './DropDown';
+import {chartList, generateBarData, numberWithCommas, Box, L, V} from './utils';
 
 const updateSearch = (search = '') => {
   state.setState({search});
+  const currentState = state.getState();
   if (search.length) {
-    const filteredCountries = state
-      .getState()
-      .countries.filter((i) =>
-        i.country.toLowerCase().includes(search.toLowerCase()),
-      );
-    state.setState({filteredCountries});
+    let filteredCountries = currentState.countries.filter((i) =>
+      i.country.toLowerCase().includes(search.toLowerCase()),
+    );
+
+    state.setState({filteredCountries}, () => {
+      if (currentState.sortBy) {
+        sortCountries(currentState.sortBy);
+      }
+    });
   } else {
-    state.setState({filteredCountries: state.getState().countries});
+    state.setState({filteredCountries: currentState.countries});
   }
+};
+
+const setNewChartData = (sort) => {
+  const chartData = generateBarData(
+    state.getState().countries,
+    chartList[sort],
+  );
+
+  state.setState({chartData, sortBarChart: chartList[sort]});
+};
+
+const sortCountries = (value) => {
+  let property = chartList[value];
+  const filteredCountries = state
+    .getState()
+    .filteredCountries.slice()
+    .sort((a, b) => b[property] - a[property]);
+  state.setState({filteredCountries, sortBy: value});
 };
 const Home = () => {
   const {
@@ -83,9 +108,13 @@ const Home = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
+            <DropDown
+              options={chartList}
+              onSelect={setNewChartData}
+              label="Select chart data"
+            />
             <Chart data={chartData} />
             <LineChart data={lineChartData} legend />
-            {/* <LineChart data={lineChartData} legend logarithmic /> */}
           </View>
           <TextInput
             style={{
@@ -101,6 +130,11 @@ const Home = () => {
             placeholder="Type Country Name Here..."
             onChangeText={updateSearch}
             value={search || ''}
+          />
+          <DropDown
+            options={chartList}
+            onSelect={sortCountries}
+            label="Sort countries by"
           />
           <Box>
             {filteredCountries.length < 1 ? (
@@ -120,12 +154,6 @@ const Home = () => {
                   },
                   index,
                 ) => {
-                  // if (!population) {
-                  //   console.log(
-                  //     '--¯_(ツ)_/¯-----------country----------',
-                  //     country,
-                  //   );
-                  // }
                   return (
                     <Link to={`country/${country}`} key={index}>
                       <View style={styles.country}>
@@ -227,4 +255,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default subscribe(Home, state);
