@@ -6,6 +6,8 @@ import {LineChart, BarChart} from './Chart';
 import {format, numberWithCommas, Box, L, V} from './utils';
 import state from './state';
 
+const redColors = new Array(1000).fill('#f00c32');
+
 const Country = (props) => {
   let {country} = useParams();
   const [barData, setBarData] = useState(null);
@@ -102,12 +104,11 @@ const Country = (props) => {
       <Link to="/">
         <Text
           style={[
-            styles.title,
+            styles.button,
+            styles.buttonText,
             {
-              color: '#fff',
               padding: 10,
               width: '100%',
-              backgroundColor: '#00429d',
               lineHeight: 35,
             },
           ]}>
@@ -163,7 +164,9 @@ const Country = (props) => {
           {!!timeData && (
             <View style={{width: '80%', marginBottom: 20}}>
               <LineChart data={timeData} title />
-              {dailyInfections && <LineChart data={dailyInfections} title />}
+              {dailyInfections && (
+                <BarChart data={dailyInfections} colors={redColors} title />
+              )}
               <BarChart
                 data={barData}
                 colors={['#ff2222', '#00ff00', '#ccc']}
@@ -197,6 +200,18 @@ const styles = StyleSheet.create({
     borderBottomColor: '#fff',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
+  },
+  button: {
+    borderRadius: 3,
+    padding: 20,
+    marginVertical: 10,
+    marginTop: 10,
+    backgroundColor: '#1B95E0',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

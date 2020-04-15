@@ -63,7 +63,7 @@ export const LineChart = ({data, legend, title, logarithmic}) => {
     </View>
   );
 };
-export const BarChart = ({data, colors: c}) => {
+export const BarChart = ({data, colors: c, title}) => {
   data.datasets[0].backgroundColor = c || colors;
   data.datasets[0].hoverBackgroundColor = c || colors;
   return (
@@ -91,8 +91,8 @@ export const BarChart = ({data, colors: c}) => {
             ],
           },
           title: {
-            display: false,
-            // text: data.datasets[0].label,
+            display: !!title,
+            text: data.datasets[0].label,
             fontSize: 20,
           },
           legend: {

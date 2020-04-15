@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 
 export const chartList = {
   Cases: 'cases',
+  'Active cases': 'active',
   Recovered: 'recovered',
   Deaths: 'deaths',
   'Population infected': 'precentage',

@@ -32,13 +32,13 @@ const updateSearch = (search = '') => {
   }
 };
 
-const setNewChartData = (sort) => {
+const setNewChartData = (sort = 'confirmed') => {
   const chartData = generateBarData(
     state.getState().countries,
     chartList[sort],
   );
 
-  state.setState({chartData, sortBarChart: chartList[sort]});
+  state.setState({chartData});
 };
 
 const sortCountries = (value) => {
@@ -49,6 +49,7 @@ const sortCountries = (value) => {
     .sort((a, b) => b[property] - a[property]);
   state.setState({filteredCountries, sortBy: value});
 };
+
 const Home = () => {
   const {
     lastUpdated,

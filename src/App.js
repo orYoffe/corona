@@ -83,6 +83,10 @@ class App extends Component {
       Gambia: 'Gambia, The',
     };
     const countries = d.countries.map((country) => {
+      const newCountry = {
+        ...country,
+        active: country.confirmed - (country.recovered + country.deaths),
+      };
       const countryPopulations = j.records.filter((i) => {
         const countryName = i.fields.country_name;
         return (
@@ -92,18 +96,15 @@ class App extends Component {
       });
 
       if (!countryPopulations.length) {
-        return country;
+        return newCountry;
       }
       const countryPopulation = countryPopulations.sort(
         (a, b) => b.fields.year - a.fields.year,
       )[0];
       if (!countryPopulation || !countryPopulation.fields.value) {
-        return country;
+        return newCountry;
       }
-      const newCountry = {
-        ...country,
-        population: countryPopulation.fields.value,
-      };
+      newCountry.population = countryPopulation.fields.value;
       const perc = (
         (country.confirmed / countryPopulation.fields.value) *
         100
