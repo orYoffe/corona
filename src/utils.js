@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 export const chartList = {
-  Cases: 'cases',
+  Cases: 'confirmed',
   'Active cases': 'active',
   Recovered: 'recovered',
   Deaths: 'deaths',
