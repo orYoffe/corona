@@ -152,6 +152,7 @@ const Home = () => {
                     recovered,
                     population,
                     precentage,
+                    active,
                   },
                   index,
                 ) => {
@@ -165,6 +166,10 @@ const Home = () => {
                           <Text style={styles.text}>
                             <L t="Cases:" />{' '}
                             <V t={numberWithCommas(confirmed)} />
+                          </Text>
+                          <Text style={styles.text}>
+                            <L t="Active: " />
+                            <V t={numberWithCommas(active)} />
                           </Text>
                           <Text style={styles.text}>
                             <L t="Deaths: " />
@@ -224,7 +229,6 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    minHeight: '100%',
     width: '100%',
   },
   title: {

@@ -132,6 +132,10 @@ const Country = (props) => {
               <L t="Total cases: " />
               <V t={numberWithCommas(data.confirmed)} />
             </Text>
+            <Text key={`Total active: ${data.active}`} style={styles.text}>
+              <L t="Total active: " />
+              <V t={numberWithCommas(data.active)} />
+            </Text>
             <Text key={`Total deaths: ${data.deaths}`} style={styles.text}>
               <L t="Total deaths: " />
               <V t={numberWithCommas(data.deaths)} />
@@ -184,6 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',
+    backgroundColor: '#222222',
   },
   title: {
     color: '#fff',

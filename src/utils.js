@@ -10,7 +10,7 @@ export const chartList = {
 };
 
 export const generateBarData = (countries, sort = 'confirmed') => {
-  const top10 = countries.sort((a, b) => b[sort] - a[sort]).slice(0, 6);
+  const top10 = countries.sort((a, b) => b[sort] - a[sort]).slice(0, 9);
 
   const labels = top10.map((i) => i.country);
   const data = top10.map((i) => i[sort]);
