@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View} from 'react-native';
 import {Bar, Line, Pie} from 'react-chartjs-2';
 import {numberWithCommas, colors} from './utils';
@@ -22,7 +22,7 @@ const logarithmicConfig = {
     chartObj.ticks.push(1000);
   },
 };
-export const LineChart = ({data, legend, title, logarithmic}) => {
+export const LineChart = memo(({data, legend, title, logarithmic}) => {
   const options = {
     title: {
       display: logarithmic || !!title,
@@ -62,8 +62,8 @@ export const LineChart = ({data, legend, title, logarithmic}) => {
       />
     </View>
   );
-};
-export const BarChart = ({data, colors: c, title}) => {
+});
+export const BarChart = memo(({data, colors: c, title}) => {
   data.datasets[0].backgroundColor = c || colors;
   data.datasets[0].hoverBackgroundColor = c || colors;
   return (
@@ -103,9 +103,9 @@ export const BarChart = ({data, colors: c, title}) => {
       />
     </View>
   );
-};
+});
 
-export const PieChart = ({data}) => {
+export const PieChart = memo(({data}) => {
   data.datasets[0].backgroundColor = colors;
   data.datasets[0].hoverBackgroundColor = colors;
   return (
@@ -144,7 +144,7 @@ export const PieChart = ({data}) => {
       /> */}
     </View>
   );
-};
+});
 const Chart = (props) => {
   return (
     <>

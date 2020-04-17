@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Text, View} from 'react-native';
 
 export const chartList = {
@@ -52,7 +52,7 @@ export const colors = [
   '#80ff80',
 ];
 
-export const Box = ({children, style}) => (
+export const Box = memo(({children, style}) => (
   <View
     style={[
       {
@@ -64,24 +64,24 @@ export const Box = ({children, style}) => (
     ]}>
     {children}
   </View>
-);
+));
 
-export const L = ({t}) => (
+export const L = memo(({t}) => (
   <Text
     style={{
       color: '#ddd',
     }}>
     {t}
   </Text>
-);
-export const V = ({t}) => (
+));
+export const V = memo(({t}) => (
   <Text
     style={{
       color: '#fff',
     }}>
     {t}
   </Text>
-);
+));
 
 export function numberWithCommas(x, shouldRound) {
   const s = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

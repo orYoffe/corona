@@ -1,18 +1,16 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View} from 'react-native';
 
+const labelStyle = {
+  color: '#fff',
+  alignSelf: 'center',
+  marginTop: 10,
+  marginBottom: 10,
+};
 const DropDown = ({onSelect, label, options}) => {
   return (
     <View className="select">
-      <label
-        style={{
-          color: '#fff',
-          alignSelf: 'center',
-          marginTop: 10,
-          marginBottom: 10,
-        }}>
-        {label}:
-      </label>
+      <label style={labelStyle}>{label}:</label>
       <select
         onChange={(e) => {
           onSelect(e.currentTarget.value);
@@ -28,4 +26,4 @@ const DropDown = ({onSelect, label, options}) => {
     </View>
   );
 };
-export default DropDown;
+export default memo(DropDown);

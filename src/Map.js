@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {View} from 'react-native';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {divIcon} from 'leaflet';
@@ -48,19 +48,22 @@ const ZOOM_5 = 1558;
 const RED = '#f00c32';
 const GREEN = '#08cf47';
 const GREY = '#30242d';
-class Mapx extends Component {
+class Mapx extends PureComponent {
   state = {
     lat: 51.165690999999995,
     lng: 10.451526,
     zoom: 3,
   };
+
   mapRef = React.createRef();
+
   handleZoom = () => {
     const zoom = this.mapRef && this.mapRef.current.leafletElement.getZoom();
     if (zoom) {
       this.setState({zoom});
     }
   };
+
   render() {
     console.log(
       '--¯_(ツ)_/¯-----------this.state.zoom----------',
@@ -75,7 +78,7 @@ class Mapx extends Component {
           marginTop: 20,
         }}>
         <Map
-          minZoom={1}
+          minZoom={2}
           ref={this.mapRef}
           onzoomend={this.handleZoom}
           center={[this.state.lat, this.state.lng]}

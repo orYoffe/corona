@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {
   StyleSheet,
   Text,
@@ -34,7 +34,7 @@ const updateSearch = (search = '') => {
 
 const setNewChartData = (sort = 'confirmed') => {
   const chartData = generateBarData(
-    state.getState().countries,
+    state.getState().countries.slice(0),
     chartList[sort],
   );
 
@@ -50,18 +50,16 @@ const sortCountries = (value) => {
   state.setState({filteredCountries, sortBy: value});
 };
 
-const Home = () => {
-  const {
-    lastUpdated,
-    lineChartData,
-    allCases,
-    allDeaths,
-    allRecovered,
-    filteredCountries,
-    search,
-    chartData,
-  } = state.getState();
-
+const Home = ({
+  lastUpdated,
+  lineChartData,
+  allCases,
+  allDeaths,
+  allRecovered,
+  filteredCountries,
+  search,
+  chartData,
+}) => {
   return (
     <View style={styles.container}>
       {!lastUpdated ? (
@@ -260,4 +258,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default subscribe(Home, state);
+export default subscribe(memo(Home), state, (state) => ({
+  lastUpdated: state.lastUpdated,
+  lineChartData: state.lineChartData,
+  allCases: state.allCases,
+  allDeaths: state.allDeaths,
+  allRecovered: state.allRecovered,
+  filteredCountries: state.filteredCountries,
+  search: state.search,
+  chartData: state.chartData,
+}));

@@ -1,18 +1,11 @@
-import React, {Component} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  ScrollView,
-} from 'react-native';
+import React, {PureComponent} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom';
-import {subscribe} from 'jstates-react';
 import Country from './Country';
 import Home from './Home';
 import {generateBarData, numberWithCommas, colors, format} from './utils';
@@ -57,7 +50,7 @@ const getLineChartData = (timeCountries) => {
   return lineChartData;
 };
 
-class App extends Component {
+class App extends PureComponent {
   async componentDidMount() {
     const [d, time, j] = await Promise.all([
       covid19.getData(),
@@ -87,6 +80,7 @@ class App extends Component {
         ...country,
         active: country.confirmed - (country.recovered + country.deaths),
       };
+
       const countryPopulations = j.records.filter((i) => {
         const countryName = i.fields.country_name;
         return (
@@ -98,20 +92,25 @@ class App extends Component {
       if (!countryPopulations.length) {
         return newCountry;
       }
+
       const countryPopulation = countryPopulations.sort(
         (a, b) => b.fields.year - a.fields.year,
       )[0];
+
       if (!countryPopulation || !countryPopulation.fields.value) {
         return newCountry;
       }
+
       newCountry.population = countryPopulation.fields.value;
       const perc = (
         (country.confirmed / countryPopulation.fields.value) *
         100
       ).toFixed(2);
+
       if (perc + '' !== '0.00') {
         newCountry.precentage = perc;
       }
+
       return newCountry;
     });
 
@@ -146,8 +145,6 @@ class App extends Component {
   }
 
   render() {
-    const {lastUpdated} = this.props;
-
     return (
       <Router basename="/corona">
         <ScrollView contentContainerStyle={styles.container}>
@@ -167,25 +164,15 @@ class App extends Component {
               ]}>
               COVID-19 data provided by Johns Hopkins CSSE
             </Text>
-            {!lastUpdated ? (
-              <ActivityIndicator
-                size="large"
-                style={{
-                  marginTop: 40,
-                  alignSelf: 'center',
-                }}
-              />
-            ) : (
-              <Switch>
-                <Route path="/country/:country">
-                  <Country />
-                </Route>
-                <Route path="/">
-                  <Home />
-                </Route>
-                <Redirect to="/" />
-              </Switch>
-            )}
+            <Switch>
+              <Route path="/country/:country">
+                <Country />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+              <Redirect to="/" />
+            </Switch>
           </View>
         </ScrollView>
       </Router>
@@ -207,6 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default subscribe(App, state, (state) => ({
-  lastUpdated: state.lastUpdated,
-}));
+export default App;

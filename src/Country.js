@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
 import {useParams, Link} from 'react-router-dom';
 import {subscribe} from 'jstates-react';
@@ -220,6 +220,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default subscribe(Country, state, (state) => ({
+export default subscribe(memo(Country), state, (state) => ({
   lastUpdated: state.lastUpdated,
 }));
