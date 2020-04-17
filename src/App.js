@@ -10,9 +10,19 @@ import Country from './Country';
 import Home from './Home';
 import {generateBarData, numberWithCommas, colors, format} from './utils';
 import state from './state';
+import dailyData from './d';
+import populationData from './j';
+import timeConfirmedData from './time';
 
 const Covid19 = require('./jsu');
 const covid19 = new Covid19();
+
+// const saveToLocalStorage = (obj) => {
+//   Object.keys(obj).forEach((key) => {
+//     console.log('--¯_(ツ)_/¯-----------key----------', key);
+//     localStorage.setItem(key, JSON.stringify(obj[key]));
+//   });
+// };
 
 const getLineChartData = (timeCountries) => {
   const lineChartData = {
@@ -39,8 +49,8 @@ const getLineChartData = (timeCountries) => {
       });
     }
     lineChartData.datasets.push({
-      label: countryTimeData.country,
-      borderColor: colors[index],
+      label: countryTimeData.country.slice(0),
+      borderColor: colors[index].slice(0),
       fill: false,
       borderWidth: 1,
       data: sets.map((i) => i.x),
@@ -50,31 +60,22 @@ const getLineChartData = (timeCountries) => {
   return lineChartData;
 };
 
+const countryNamesExceptions = {
+  US: 'United States',
+  Iran: 'Iran, Islamic Rep.',
+  Russia: 'Russian Federation',
+  'Korea, South': 'Korea, Rep.',
+  Czechia: 'Czech Republic',
+  Egypt: 'Egypt, Arab Rep.',
+  Slovakia: 'Slovak Republic',
+  Kyrgyzstan: 'Kyrgyz Republic',
+  Venezuela: 'Venezuela, RB',
+  Brunei: 'Brunei Darussalam',
+  Gambia: 'Gambia, The',
+};
+
 class App extends PureComponent {
-  async componentDidMount() {
-    const [d, time, j] = await Promise.all([
-      covid19.getData(),
-      covid19.getTimeSeriesData('confirmed'),
-      fetch(
-        'https://data.opendatasoft.com/api/records/1.0/search/?dataset=world-population%40kapsarc&rows=10000&sort=year&facet=year&facet=country_name',
-      ).then((j) => j.json()),
-    ]);
-    console.log('--¯_(ツ)_/¯-----------d----------', d);
-    console.log('--¯_(ツ)_/¯-----------time----------', time);
-    console.log('--¯_(ツ)_/¯-----------j----------', j);
-    const countryNamesExceptions = {
-      US: 'United States',
-      Iran: 'Iran, Islamic Rep.',
-      Russia: 'Russian Federation',
-      'Korea, South': 'Korea, Rep.',
-      Czechia: 'Czech Republic',
-      Egypt: 'Egypt, Arab Rep.',
-      Slovakia: 'Slovak Republic',
-      Kyrgyzstan: 'Kyrgyz Republic',
-      Venezuela: 'Venezuela, RB',
-      Brunei: 'Brunei Darussalam',
-      Gambia: 'Gambia, The',
-    };
+  parseData = (d, time, j) => {
     const countries = d.countries.map((country) => {
       const newCountry = {
         ...country,
@@ -128,20 +129,37 @@ class App extends PureComponent {
         return bTotal - aTotal;
       })
       .slice(0, 10);
-    const chartData = generateBarData(countries);
+    const chartData = generateBarData(countries.slice(0));
     const lineChartData = getLineChartData(timeCountries);
 
-    state.setState({
+    const newState = {
       lastUpdated: new Date(d.date.replace(/-/g, '/')),
       allCases: numberWithCommas(d.confirmed),
       allDeaths: numberWithCommas(d.deaths),
       allRecovered: numberWithCommas(d.recovered),
       countries,
-      filteredCountries: countries,
+      filteredCountries: countries.slice(0),
       chartData,
       time,
       lineChartData,
-    });
+    };
+    state.setState(newState);
+    // saveToLocalStorage({d, time, j});
+  };
+  async componentDidMount() {
+    this.parseData(dailyData, timeConfirmedData, populationData);
+    const [d, time, j] = await Promise.all([
+      covid19.getData(),
+      covid19.getTimeSeriesData('confirmed'),
+      fetch(
+        'https://data.opendatasoft.com/api/records/1.0/search/?dataset=world-population%40kapsarc&rows=10000&sort=year&facet=year&facet=country_name',
+      ).then((j) => j.json()),
+    ]);
+    console.log('--¯_(ツ)_/¯-----------d----------', d);
+    console.log('--¯_(ツ)_/¯-----------time----------', time);
+    console.log('--¯_(ツ)_/¯-----------j----------', j);
+
+    this.parseData(d, time, j);
   }
 
   render() {
