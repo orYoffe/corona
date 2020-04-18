@@ -1,4 +1,4 @@
-import React, {memo, Suspense, useEffect} from 'react';
+import React, {memo, Suspense} from 'react';
 import {
   StyleSheet,
   Text,
@@ -55,7 +55,7 @@ const sortCountries = (value) => {
   state.setState({filteredCountries, sortBy: value});
 };
 
-const HCharts = ({chartData, lineChartData}) => {
+const Charts = ({chartData, lineChartData}) => {
   return (
     <View
       style={{
@@ -94,7 +94,7 @@ const HCharts = ({chartData, lineChartData}) => {
     </View>
   );
 };
-const HomeCharts = subscribe(memo(HCharts), state, (state) => ({
+const HomeCharts = subscribe(memo(Charts), state, (state) => ({
   lineChartData: state.lineChartData,
   chartData: state.chartData,
 }));
