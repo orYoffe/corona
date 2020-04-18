@@ -1,4 +1,4 @@
-import React, {PureComponent, Suspense} from 'react';
+import React, {memo, Suspense} from 'react';
 import {
   StyleSheet,
   Text,
@@ -70,45 +70,60 @@ const countryNamesExceptions = {
   Gambia: 'Gambia, The',
 };
 const parseData = (d, time, j) => {
-  const countries = d.countries.map((country) => {
-    const newCountry = {
-      ...country,
-      active: country.confirmed - (country.recovered + country.deaths),
-    };
+  const countries = d.countries
+    .map((country) => {
+      const newCountry = {
+        ...country,
+        active: country.confirmed - (country.recovered + country.deaths),
+      };
 
-    const countryPopulations = j.records.filter((i) => {
-      const countryName = i.fields.country_name;
-      return (
-        countryName.toLowerCase() === country.country.toLowerCase() ||
-        countryName === countryNamesExceptions[country.country]
-      );
-    });
+      const countryPopulations = j.records.filter((i) => {
+        const countryName = i.fields.country_name;
+        return (
+          countryName.toLowerCase() === country.country.toLowerCase() ||
+          countryName === countryNamesExceptions[country.country]
+        );
+      });
 
-    if (!countryPopulations.length) {
+      if (!countryPopulations.length) {
+        return newCountry;
+      }
+
+      const countryPopulation = countryPopulations.sort(
+        (a, b) => b.fields.year - a.fields.year,
+      )[0];
+
+      if (!countryPopulation || !countryPopulation.fields.value) {
+        return newCountry;
+      }
+
+      newCountry.population = countryPopulation.fields.value;
+      const perc = (
+        (country.confirmed / countryPopulation.fields.value) *
+        100
+      ).toFixed(2);
+
+      if (perc + '' !== '0.00') {
+        newCountry.precentage = perc;
+      }
+
       return newCountry;
-    }
+    })
+    .sort((a, b) => b.confirmed - a.confirmed);
 
-    const countryPopulation = countryPopulations.sort(
-      (a, b) => b.fields.year - a.fields.year,
-    )[0];
-
-    if (!countryPopulation || !countryPopulation.fields.value) {
-      return newCountry;
-    }
-
-    newCountry.population = countryPopulation.fields.value;
-    const perc = (
-      (country.confirmed / countryPopulation.fields.value) *
-      100
-    ).toFixed(2);
-
-    if (perc + '' !== '0.00') {
-      newCountry.precentage = perc;
-    }
-
-    return newCountry;
+  state.setState({
+    lastUpdated: new Date(d.date.replace(/-/g, '/')),
+    allCases: numberWithCommas(d.confirmed),
+    allDeaths: numberWithCommas(d.deaths),
+    allRecovered: numberWithCommas(d.recovered),
+    countries,
+    filteredCountries: countries,
+    time,
   });
-
+  const chartData = generateBarData(countries.slice(0));
+  state.setState({
+    chartData,
+  });
   const timeCountries = time.countries
     .sort((a, b) => {
       let aTotal = 0;
@@ -123,22 +138,9 @@ const parseData = (d, time, j) => {
       return bTotal - aTotal;
     })
     .slice(0, 10);
-  const chartData = generateBarData(countries.slice(0));
   const lineChartData = getLineChartData(timeCountries);
 
-  const newState = {
-    lastUpdated: new Date(d.date.replace(/-/g, '/')),
-    allCases: numberWithCommas(d.confirmed),
-    allDeaths: numberWithCommas(d.deaths),
-    allRecovered: numberWithCommas(d.recovered),
-    countries,
-    filteredCountries: countries.slice(0),
-    chartData,
-    time,
-    lineChartData,
-  };
-  state.setState(newState);
-  // saveToLocalStorage({d, time, j});
+  state.setState({lineChartData});
 };
 
 Promise.all([
@@ -154,53 +156,51 @@ Promise.all([
   parseData(d, time, j);
 });
 
-class App extends PureComponent {
-  render() {
-    return (
-      <Router basename="/corona">
-        <ScrollView contentContainerStyle={styles.container}>
-          <View style={styles.container}>
-            <Text
-              accessibilityRole="link"
-              target="_blank"
-              href="https://github.com/CSSEGISandData/COVID-19"
-              style={[
-                styles.title,
-                {
-                  color: '#aaa',
-                  padding: 10,
-                  width: '100%',
-                  textAlign: 'center',
-                },
-              ]}>
-              COVID-19 data provided by Johns Hopkins CSSE
-            </Text>
-            <Suspense
-              fallback={
-                <ActivityIndicator
-                  size="large"
-                  style={{
-                    marginTop: 40,
-                    alignSelf: 'center',
-                  }}
-                />
-              }>
-              <Switch>
-                <Route path="/country/:country">
-                  <Country />
-                </Route>
-                <Route path="/">
-                  <Home />
-                </Route>
-                <Redirect to="/" />
-              </Switch>
-            </Suspense>
-          </View>
-        </ScrollView>
-      </Router>
-    );
-  }
-}
+const App = () => {
+  return (
+    <Router basename="/corona">
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
+          <Text
+            accessibilityRole="link"
+            target="_blank"
+            href="https://github.com/CSSEGISandData/COVID-19"
+            style={[
+              styles.title,
+              {
+                color: '#aaa',
+                padding: 10,
+                width: '100%',
+                textAlign: 'center',
+              },
+            ]}>
+            COVID-19 data provided by Johns Hopkins CSSE
+          </Text>
+          <Suspense
+            fallback={
+              <ActivityIndicator
+                size="large"
+                style={{
+                  marginTop: 40,
+                  alignSelf: 'center',
+                }}
+              />
+            }>
+            <Switch>
+              <Route path="/country/:country">
+                <Country />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+              <Redirect to="/" />
+            </Switch>
+          </Suspense>
+        </View>
+      </ScrollView>
+    </Router>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -216,4 +216,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default memo(App);

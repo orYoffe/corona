@@ -1,4 +1,4 @@
-import React, {memo, Suspense} from 'react';
+import React, {memo, Suspense, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {subscribe} from 'jstates-react';
 import {Link} from 'react-router-dom';
-// import Chart, {LineChart} from './Chart';
 import state from './state';
 import DropDown from './DropDown';
 import {chartList, generateBarData, numberWithCommas, Box, L, V} from './utils';
@@ -56,105 +55,63 @@ const sortCountries = (value) => {
   state.setState({filteredCountries, sortBy: value});
 };
 
-const Home = ({
-  lastUpdated,
-  lineChartData,
-  allCases,
-  allDeaths,
-  allRecovered,
-  filteredCountries,
-  search,
-  chartData,
-}) => {
+const HCharts = ({chartData, lineChartData}) => {
   return (
-    <View style={styles.container}>
-      <Suspense fallback="">
-        <Map />
-      </Suspense>
-      {lastUpdated && (
-        <Box
-          style={{
-            borderBottomColor: '#fff',
-            borderBottomStyle: 'solid',
-            borderBottomWidth: 1,
-          }}>
-          <Text style={[styles.title, styles.text]}>Worldwide</Text>
-          <Text key={`Total cases: ${allCases}`} style={styles.text}>
-            <L t="Total cases: " />
-            <V t={allCases} />
-          </Text>
-          <Text key={`Total deaths: ${allDeaths}`} style={styles.text}>
-            <L t="Total deaths: " />
-            <V t={allDeaths} />
-          </Text>
-          <Text key={`Total recovered: ${allRecovered}`} style={styles.text}>
-            <L t="Total recovered: " />
-            <V t={allRecovered} />
-          </Text>
-          <Text
-            key={`updated on: ${lastUpdated.toDateString()}`}
-            style={styles.text}>
-            <L t="Updated on: " />
-            <V t={lastUpdated.toDateString()} />
-          </Text>
-        </Box>
-      )}
-      <View
-        style={{
-          width: '80%',
-          marginBottom: 20,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <DropDown
-          options={chartList}
-          onSelect={setNewChartData}
-          label="Select chart data"
-        />
-
-        {chartData && (
-          <Suspense
-            fallback={
-              <ActivityIndicator
-                size="large"
-                style={{
-                  marginTop: 40,
-                  alignSelf: 'center',
-                }}
-              />
-            }>
-            <Chart data={chartData} />
-          </Suspense>
-        )}
-        {lineChartData && (
-          <Suspense fallback="">
-            <LineChart data={lineChartData} legend />
-          </Suspense>
-        )}
-      </View>
-      <TextInput
-        style={{
-          height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          backgroundColor: '#ccc',
-          width: '80%',
-          borderRadius: 3,
-          paddingLeft: 8,
-          paddingRight: 8,
-        }}
-        placeholder="Type Country Name Here..."
-        onChangeText={updateSearch}
-        value={search || ''}
-      />
+    <View
+      style={{
+        width: '80%',
+        marginBottom: 20,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
       <DropDown
         options={chartList}
-        onSelect={sortCountries}
-        label="Sort countries by"
+        onSelect={setNewChartData}
+        label="Select chart data"
       />
+
+      {chartData && (
+        <Suspense
+          fallback={
+            <ActivityIndicator
+              size="large"
+              style={{
+                marginTop: 40,
+                height: 200,
+                alignSelf: 'center',
+              }}
+            />
+          }>
+          <Chart data={chartData} />
+        </Suspense>
+      )}
+      {lineChartData && (
+        <Suspense fallback="">
+          <LineChart data={lineChartData} legend />
+        </Suspense>
+      )}
+    </View>
+  );
+};
+const HomeCharts = subscribe(memo(HCharts), state, (state) => ({
+  lineChartData: state.lineChartData,
+  chartData: state.chartData,
+}));
+
+const List = subscribe(
+  memo(({filteredCountries}) => {
+    return (
       <Box>
-        {filteredCountries.length < 1 ? (
+        {!filteredCountries ? (
+          <ActivityIndicator
+            size="large"
+            style={{
+              marginTop: 40,
+              alignSelf: 'center',
+            }}
+          />
+        ) : filteredCountries.length < 1 ? (
           <Text style={[styles.title, styles.text]}>
             No counteries were found.. try another search term
           </Text>
@@ -233,6 +190,80 @@ const Home = ({
           )
         )}
       </Box>
+    );
+  }),
+  state,
+  (state) => ({
+    filteredCountries: state.filteredCountries,
+  }),
+);
+
+const Home = ({lastUpdated, allCases, allDeaths, allRecovered, search}) => {
+  return (
+    <View style={styles.container}>
+      <Suspense
+        fallback={
+          <ActivityIndicator
+            size="large"
+            style={{
+              marginTop: 40,
+              height: 400,
+              alignSelf: 'center',
+            }}
+          />
+        }>
+        <Map />
+      </Suspense>
+      {lastUpdated && (
+        <Box
+          style={{
+            borderBottomColor: '#fff',
+            borderBottomStyle: 'solid',
+            borderBottomWidth: 1,
+          }}>
+          <Text style={[styles.title, styles.text]}>Worldwide</Text>
+          <Text key={`Total cases: ${allCases}`} style={styles.text}>
+            <L t="Total cases: " />
+            <V t={allCases} />
+          </Text>
+          <Text key={`Total deaths: ${allDeaths}`} style={styles.text}>
+            <L t="Total deaths: " />
+            <V t={allDeaths} />
+          </Text>
+          <Text key={`Total recovered: ${allRecovered}`} style={styles.text}>
+            <L t="Total recovered: " />
+            <V t={allRecovered} />
+          </Text>
+          <Text
+            key={`updated on: ${lastUpdated.toDateString()}`}
+            style={styles.text}>
+            <L t="Updated on: " />
+            <V t={lastUpdated.toDateString()} />
+          </Text>
+        </Box>
+      )}
+      <HomeCharts />
+      <TextInput
+        style={{
+          height: 40,
+          borderColor: 'gray',
+          borderWidth: 1,
+          backgroundColor: '#ccc',
+          width: '80%',
+          borderRadius: 3,
+          paddingLeft: 8,
+          paddingRight: 8,
+        }}
+        placeholder="Type Country Name Here..."
+        onChangeText={updateSearch}
+        value={search || ''}
+      />
+      <DropDown
+        options={chartList}
+        onSelect={sortCountries}
+        label="Sort countries by"
+      />
+      <List />
     </View>
   );
 };
@@ -273,11 +304,8 @@ const styles = StyleSheet.create({
 
 export default subscribe(memo(Home), state, (state) => ({
   lastUpdated: state.lastUpdated,
-  lineChartData: state.lineChartData,
   allCases: state.allCases,
   allDeaths: state.allDeaths,
   allRecovered: state.allRecovered,
-  filteredCountries: state.filteredCountries,
   search: state.search,
-  chartData: state.chartData,
 }));
