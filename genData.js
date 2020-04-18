@@ -20,7 +20,7 @@ Promise.all([
       '</head>',
       `<script>window.__j__ = ${JSON.stringify(
         j,
-      )}window.__d__ = ${JSON.stringify(d)}</script></head>`,
+      )};window.__d__ = ${JSON.stringify(d)};</script></head>`,
     ),
     'utf8',
   );
