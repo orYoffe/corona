@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {memo, Suspense} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,11 +8,17 @@ import {
 } from 'react-native';
 import {subscribe} from 'jstates-react';
 import {Link} from 'react-router-dom';
-import Chart, {LineChart} from './Chart';
+// import Chart, {LineChart} from './Chart';
 import state from './state';
-import Map from './Map';
 import DropDown from './DropDown';
 import {chartList, generateBarData, numberWithCommas, Box, L, V} from './utils';
+const Map = React.lazy(() => import('./Map'));
+const Chart = React.lazy(() => import('./Chart'));
+const LineChart = React.lazy(() =>
+  import('./Chart').then((module) => ({
+    default: module.LineChart,
+  })),
+);
 
 const updateSearch = (search = '') => {
   state.setState({search});
@@ -62,164 +68,171 @@ const Home = ({
 }) => {
   return (
     <View style={styles.container}>
-      {!lastUpdated ? (
-        <ActivityIndicator
-          size="large"
+      <Suspense fallback="">
+        <Map />
+      </Suspense>
+      {lastUpdated && (
+        <Box
           style={{
-            marginTop: 40,
-            alignSelf: 'center',
-          }}
-        />
-      ) : (
-        <>
-          <Map />
-          <Box
-            style={{
-              borderBottomColor: '#fff',
-              borderBottomStyle: 'solid',
-              borderBottomWidth: 1,
-            }}>
-            <Text style={[styles.title, styles.text]}>Worldwide</Text>
-            <Text key={`Total cases: ${allCases}`} style={styles.text}>
-              <L t="Total cases: " />
-              <V t={allCases} />
-            </Text>
-            <Text key={`Total deaths: ${allDeaths}`} style={styles.text}>
-              <L t="Total deaths: " />
-              <V t={allDeaths} />
-            </Text>
-            <Text key={`Total recovered: ${allRecovered}`} style={styles.text}>
-              <L t="Total recovered: " />
-              <V t={allRecovered} />
-            </Text>
-            <Text
-              key={`updated on: ${lastUpdated.toDateString()}`}
-              style={styles.text}>
-              <L t="Updated on: " />
-              <V t={lastUpdated.toDateString()} />
-            </Text>
-          </Box>
-          <View
-            style={{
-              width: '80%',
-              marginBottom: 20,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <DropDown
-              options={chartList}
-              onSelect={setNewChartData}
-              label="Select chart data"
-            />
-            <Chart data={chartData} />
-            <LineChart data={lineChartData} legend />
-          </View>
-          <TextInput
-            style={{
-              height: 40,
-              borderColor: 'gray',
-              borderWidth: 1,
-              backgroundColor: '#ccc',
-              width: '80%',
-              borderRadius: 3,
-              paddingLeft: 8,
-              paddingRight: 8,
-            }}
-            placeholder="Type Country Name Here..."
-            onChangeText={updateSearch}
-            value={search || ''}
-          />
-          <DropDown
-            options={chartList}
-            onSelect={sortCountries}
-            label="Sort countries by"
-          />
-          <Box>
-            {filteredCountries.length < 1 ? (
-              <Text style={[styles.title, styles.text]}>
-                No counteries were found.. try another search term
-              </Text>
-            ) : (
-              filteredCountries.map(
-                (
-                  {
-                    country,
-                    confirmed,
-                    deaths,
-                    recovered,
-                    population,
-                    precentage,
-                    active,
-                  },
-                  index,
-                ) => {
-                  return (
-                    <Link to={`country/${country}`} key={index}>
-                      <View style={styles.country}>
-                        <View>
-                          <Text style={[styles.title, styles.text]}>
-                            {country}
-                          </Text>
-                          <Text style={styles.text}>
-                            <L t="Cases:" />{' '}
-                            <V t={numberWithCommas(confirmed)} />
-                          </Text>
-                          <Text style={styles.text}>
-                            <L t="Active: " />
-                            <V t={numberWithCommas(active)} />
-                          </Text>
-                          <Text style={styles.text}>
-                            <L t="Deaths: " />
-                            <V t={numberWithCommas(deaths)} />
-                          </Text>
-                          <Text style={styles.text}>
-                            <L t="Recovered: " />
-                            <V t={numberWithCommas(recovered)} />
-                          </Text>
-
-                          {!!population && (
-                            <Text style={styles.text}>
-                              <L t="Population: " />
-                              <V t={numberWithCommas(population)} />
-                            </Text>
-                          )}
-                          {!!precentage && (
-                            <Text style={styles.text}>
-                              <L t="Population infected: " />
-                              <V t={precentage + '%'} />
-                            </Text>
-                          )}
-                        </View>
-                        <Text
-                          style={[
-                            {
-                              alignSelf: 'flex-end',
-                              color: '#fff',
-                              padding: 10,
-                              width: '100%',
-                              backgroundColor: '#00429d',
-                              lineHeight: 35,
-                              borderRadius: 3,
-                              textAlign: 'center',
-                              shadowColor: '#000',
-                              shadowOffset: {width: 0, height: 1},
-                              shadowOpacity: 0.8,
-                              shadowRadius: 2,
-                              elevation: 5,
-                            },
-                          ]}>
-                          See country stats
-                        </Text>
-                      </View>
-                    </Link>
-                  );
-                },
-              )
-            )}
-          </Box>
-        </>
+            borderBottomColor: '#fff',
+            borderBottomStyle: 'solid',
+            borderBottomWidth: 1,
+          }}>
+          <Text style={[styles.title, styles.text]}>Worldwide</Text>
+          <Text key={`Total cases: ${allCases}`} style={styles.text}>
+            <L t="Total cases: " />
+            <V t={allCases} />
+          </Text>
+          <Text key={`Total deaths: ${allDeaths}`} style={styles.text}>
+            <L t="Total deaths: " />
+            <V t={allDeaths} />
+          </Text>
+          <Text key={`Total recovered: ${allRecovered}`} style={styles.text}>
+            <L t="Total recovered: " />
+            <V t={allRecovered} />
+          </Text>
+          <Text
+            key={`updated on: ${lastUpdated.toDateString()}`}
+            style={styles.text}>
+            <L t="Updated on: " />
+            <V t={lastUpdated.toDateString()} />
+          </Text>
+        </Box>
       )}
+      <View
+        style={{
+          width: '80%',
+          marginBottom: 20,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <DropDown
+          options={chartList}
+          onSelect={setNewChartData}
+          label="Select chart data"
+        />
+
+        {chartData && (
+          <Suspense
+            fallback={
+              <ActivityIndicator
+                size="large"
+                style={{
+                  marginTop: 40,
+                  alignSelf: 'center',
+                }}
+              />
+            }>
+            <Chart data={chartData} />
+          </Suspense>
+        )}
+        {lineChartData && (
+          <Suspense fallback="">
+            <LineChart data={lineChartData} legend />
+          </Suspense>
+        )}
+      </View>
+      <TextInput
+        style={{
+          height: 40,
+          borderColor: 'gray',
+          borderWidth: 1,
+          backgroundColor: '#ccc',
+          width: '80%',
+          borderRadius: 3,
+          paddingLeft: 8,
+          paddingRight: 8,
+        }}
+        placeholder="Type Country Name Here..."
+        onChangeText={updateSearch}
+        value={search || ''}
+      />
+      <DropDown
+        options={chartList}
+        onSelect={sortCountries}
+        label="Sort countries by"
+      />
+      <Box>
+        {filteredCountries.length < 1 ? (
+          <Text style={[styles.title, styles.text]}>
+            No counteries were found.. try another search term
+          </Text>
+        ) : (
+          filteredCountries.map(
+            (
+              {
+                country,
+                confirmed,
+                deaths,
+                recovered,
+                population,
+                precentage,
+                active,
+              },
+              index,
+            ) => {
+              return (
+                <Link to={`country/${country}`} key={index}>
+                  <View style={styles.country}>
+                    <View>
+                      <Text style={[styles.title, styles.text]}>{country}</Text>
+                      <Text style={styles.text}>
+                        <L t="Cases:" /> <V t={numberWithCommas(confirmed)} />
+                      </Text>
+                      <Text style={styles.text}>
+                        <L t="Active: " />
+                        <V t={numberWithCommas(active)} />
+                      </Text>
+                      <Text style={styles.text}>
+                        <L t="Deaths: " />
+                        <V t={numberWithCommas(deaths)} />
+                      </Text>
+                      <Text style={styles.text}>
+                        <L t="Recovered: " />
+                        <V t={numberWithCommas(recovered)} />
+                      </Text>
+
+                      {!!population && (
+                        <Text style={styles.text}>
+                          <L t="Population: " />
+                          <V t={numberWithCommas(population)} />
+                        </Text>
+                      )}
+                      {!!precentage && (
+                        <Text style={styles.text}>
+                          <L t="Population infected: " />
+                          <V t={precentage + '%'} />
+                        </Text>
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        {
+                          alignSelf: 'flex-end',
+                          color: '#fff',
+                          padding: 10,
+                          width: '100%',
+                          backgroundColor: '#00429d',
+                          lineHeight: 35,
+                          borderRadius: 3,
+                          textAlign: 'center',
+                          shadowColor: '#000',
+                          shadowOffset: {width: 0, height: 1},
+                          shadowOpacity: 0.8,
+                          shadowRadius: 2,
+                          elevation: 5,
+                        },
+                      ]}>
+                      See country stats
+                    </Text>
+                  </View>
+                </Link>
+              );
+            },
+          )
+        )}
+      </Box>
     </View>
   );
 };

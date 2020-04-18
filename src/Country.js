@@ -14,9 +14,12 @@ const Country = (props) => {
   const [dailyInfections, setDailyInfections] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [data, setCountryData] = useState(null);
+  const {countries, time} = props;
 
   useEffect(() => {
-    const {countries, time} = state.getState();
+    if (!countries || !time) {
+      return;
+    }
     const countryTimeData = time.countries.find((i) => i.country === country);
     const countryData = countries.find((i) => i.country === country);
     if (!countryData) {
@@ -85,7 +88,7 @@ const Country = (props) => {
       };
       setDailyInfections(dailyInfectionsData);
     }
-  }, [country]);
+  }, [country, time, countries]);
 
   if (data === null) {
     return (
@@ -165,18 +168,19 @@ const Country = (props) => {
               <V t={props.lastUpdated.toDateString()} />
             </Text>
           </Box>
-          {!!timeData && (
-            <View style={{width: '80%', marginBottom: 20}}>
-              <LineChart data={timeData} title />
-              {dailyInfections && (
-                <BarChart data={dailyInfections} colors={redColors} title />
-              )}
+
+          <View style={{width: '80%', marginBottom: 20}}>
+            {!!timeData && <LineChart data={timeData} title />}
+            {dailyInfections && (
+              <BarChart data={dailyInfections} colors={redColors} title />
+            )}
+            {barData && (
               <BarChart
                 data={barData}
                 colors={['#ff2222', '#00ff00', '#ccc']}
               />
-            </View>
-          )}
+            )}
+          </View>
         </>
       )}
     </View>
@@ -222,4 +226,6 @@ const styles = StyleSheet.create({
 
 export default subscribe(memo(Country), state, (state) => ({
   lastUpdated: state.lastUpdated,
+  time: state.time,
+  countries: state.countries,
 }));
