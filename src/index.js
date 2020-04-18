@@ -7,10 +7,19 @@ import {getData, getTimeSeriesData} from './jsu';
 import {parseData, parseTimeData} from './initData';
 import state from './state';
 
-if (window.__j__ && window.__d__) {
+const LSKey = 'd';
+
+let data = localStorage.getItem(LSKey);
+data = data && JSON.parse(data);
+
+if (data && data.j && data.d) {
+  console.log('--¯_(ツ)_/¯---------parsing local storage data----------');
+  parseData(data.d, data.j);
+} else if (window.__j__ && window.__d__) {
   console.log('--¯_(ツ)_/¯---------parsing old data----------');
   parseData(window.__d__, window.__j__);
 }
+
 Promise.all([
   getData(),
   fetch(
@@ -20,6 +29,7 @@ Promise.all([
   console.log('--¯_(ツ)_/¯-----------d----------', d);
   console.log('--¯_(ツ)_/¯-----------j----------', j);
   parseData(d, j);
+  localStorage.setItem(LSKey, JSON.stringify({d, j}));
 });
 
 getTimeSeriesData('confirmed').then(parseTimeData);
