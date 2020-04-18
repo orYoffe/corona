@@ -8,6 +8,7 @@ import {parseData, parseTimeData} from './initData';
 import state from './state';
 
 if (window.__j__ && window.__d__) {
+  console.log('--¯_(ツ)_/¯---------parsing old data----------');
   parseData(window.__d__, window.__j__);
 }
 Promise.all([
