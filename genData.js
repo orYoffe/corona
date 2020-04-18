@@ -17,10 +17,10 @@ Promise.all([
   fs.writeFileSync(
     filePath,
     data.replace(
-      '<div id="root"></div>',
+      '</head>',
       `<script>window.__j__ = ${JSON.stringify(
         j,
-      )}window.__d__ = ${JSON.stringify(d)}</script><div id="root"></div>`,
+      )}window.__d__ = ${JSON.stringify(d)}</script></head>`,
     ),
     'utf8',
   );
