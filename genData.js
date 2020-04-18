@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 require('universal-fetch');
 import fs from 'fs';
 import path from 'path';
@@ -11,15 +12,16 @@ Promise.all([
 ]).then(([d, j]) => {
   console.log('--¯_(ツ)_/¯-----------d----------', d);
   console.log('--¯_(ツ)_/¯-----------j----------', j);
-  fs.readFile(path.resolve('./build/index.html'), 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-    }
+  const filePath = path.resolve('./build/index.html');
+  const data = fs.readFileSync(filePath, 'utf8');
+  fs.writeFileSync(
+    filePath,
     data.replace(
       '<div id="root"></div>',
       `<script>window.__j__ = ${JSON.stringify(
         j,
       )}window.__d__ = ${JSON.stringify(d)}</script><div id="root"></div>`,
-    );
-  });
+    ),
+    'utf8',
+  );
 });
