@@ -6,7 +6,10 @@ import {LineChart, BarChart} from './Chart';
 import {format, numberWithCommas, Box, L, V} from './utils';
 import state from './state';
 
-const redColors = new Array(1000).fill('#f00c32');
+const RED = '#f00c32';
+const GREEN = '#08cf47';
+const GREY = '#555';
+const redColors = new Array(1000).fill(RED);
 
 const Country = (props) => {
   let {country} = useParams();
@@ -14,12 +17,18 @@ const Country = (props) => {
   const [dailyInfections, setDailyInfections] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [data, setCountryData] = useState(null);
-  const {countries, time} = props;
+  const {countries, time, deaths, recovered} = props;
 
   useEffect(() => {
-    if (!countries || !time) {
+    if (!countries || !time || !deaths || !recovered) {
       return;
     }
+    const countryDeathTimeData = deaths.countries.find(
+      (i) => i.country === country,
+    );
+    const countryRecoveredTimeData = recovered.countries.find(
+      (i) => i.country === country,
+    );
     const countryTimeData = time.countries.find((i) => i.country === country);
     const countryData = countries.find((i) => i.country === country);
     if (!countryData) {
@@ -32,7 +41,7 @@ const Country = (props) => {
         datasets: [
           {
             label: country,
-            backgroundColor: 'rgba(75,192,192,1)',
+            // backgroundColor: 'rgba(75,192,192,1)',
             borderColor: 'rgba(0,0,0,1)',
             borderWidth: 2,
             data: [confirmed, recovered, deaths],
@@ -52,6 +61,26 @@ const Country = (props) => {
         });
         return {y: time, x: total};
       });
+      const setsDeath = countryDeathTimeData.locations[0].dates.map(
+        (i, index) => {
+          let total = 0;
+          const time = Object.keys(i)[0];
+          countryDeathTimeData.locations.forEach((location) => {
+            total += location.dates[index][time];
+          });
+          return total;
+        },
+      );
+      const setsRecovered = countryRecoveredTimeData.locations[0].dates.map(
+        (i, index) => {
+          let total = 0;
+          const time = Object.keys(i)[0];
+          countryRecoveredTimeData.locations.forEach((location) => {
+            total += location.dates[index][time];
+          });
+          return total;
+        },
+      );
       const labels = sets.map((i) => {
         const d = new Date(i.y.replace(/-/g, '/'));
         const day = d.getDate();
@@ -63,9 +92,37 @@ const Country = (props) => {
         labels,
         datasets: [
           {
+            label: 'Deaths',
+            backgroundColor: GREY,
+            // borderColor: GREY,
+            // fillColor: GREY,
+            // pointColor: GREY,
+            // pointStrokeColor: '#fff',
+            // pointHighlightFill: '#fff',
+            borderWidth: 1,
+            data: setsDeath,
+          },
+          {
+            label: 'Recovered',
+            backgroundColor: GREEN,
+            // borderColor: GREEN,
+            // fillColor: GREEN,
+            // pointColor: GREEN,
+            // pointStrokeColor: '#fff',
+            // pointHighlightFill: '#fff',
+            borderWidth: 1,
+            data: setsRecovered,
+          },
+          {
             label: 'Confirmed Cases',
-            backgroundColor: 'rgba(75,192,192,1)',
-            borderWidth: 2,
+            backgroundColor: RED,
+            // borderColor: RED,
+            // fillColor: RED,
+            // pointColor: RED,
+            // pointStrokeColor: '#fff',
+            // pointHighlightFill: '#fff',
+            // fill: false,
+            borderWidth: 1,
             data: sets.map((i) => i.x),
           },
         ],
@@ -88,7 +145,7 @@ const Country = (props) => {
       };
       setDailyInfections(dailyInfectionsData);
     }
-  }, [country, time, countries]);
+  }, [country, time, countries, deaths, recovered]);
 
   if (data === null) {
     return (
@@ -170,15 +227,12 @@ const Country = (props) => {
           </Box>
 
           <View style={{width: '80%', marginBottom: 20}}>
-            {!!timeData && <LineChart data={timeData} title />}
-            {dailyInfections && (
+            {!!timeData && <LineChart data={timeData} />}
+            {!!dailyInfections && (
               <BarChart data={dailyInfections} colors={redColors} title />
             )}
-            {barData && (
-              <BarChart
-                data={barData}
-                colors={['#ff2222', '#00ff00', '#ccc']}
-              />
+            {!!barData && (
+              <BarChart data={barData} colors={[RED, GREEN, GREY]} />
             )}
           </View>
         </>
@@ -228,4 +282,6 @@ export default subscribe(memo(Country), state, (state) => ({
   lastUpdated: state.lastUpdated,
   time: state.time,
   countries: state.countries,
+  deaths: state.deaths,
+  recovered: state.recovered,
 }));

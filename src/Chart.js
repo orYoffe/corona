@@ -3,30 +3,11 @@ import {View} from 'react-native';
 import {Bar, Line, Pie} from 'react-chartjs-2';
 import {numberWithCommas, colors} from './utils';
 
-const logarithmicConfig = {
-  type: 'logarithmic',
-  ticks: {
-    min: 0.1, //minimum tick
-    max: 1000, //maximum tick
-    callback: function (value, index, values) {
-      return Number(value.toString()); //pass tick values as a string into Number function
-    },
-  },
-  afterBuildTicks: function (chartObj) {
-    //Build ticks labelling as per your need
-    chartObj.ticks = [];
-    chartObj.ticks.push(0.1);
-    chartObj.ticks.push(1);
-    chartObj.ticks.push(10);
-    chartObj.ticks.push(100);
-    chartObj.ticks.push(1000);
-  },
-};
-export const LineChart = memo(({data, legend, title, logarithmic}) => {
+export const LineChart = memo(({data, legend, title}) => {
   const options = {
     title: {
-      display: logarithmic || !!title,
-      text: logarithmic ? 'Logarithmic chart' : data.datasets[0].label,
+      display: !!title,
+      text: data.datasets[0].label,
       fontSize: 20,
     },
     responsive: true,
@@ -56,10 +37,7 @@ export const LineChart = memo(({data, legend, title, logarithmic}) => {
   return (
     <View
       style={{marginTop: 20, height: 450, width: '100%', position: 'relative'}}>
-      <Line
-        data={data}
-        options={logarithmic ? {...logarithmicConfig, ...options} : options}
-      />
+      <Line data={data} options={options} />
     </View>
   );
 });
@@ -83,6 +61,7 @@ export const BarChart = memo(({data, colors: c, title}) => {
             yAxes: [
               {
                 ticks: {
+                  beginAtZero: true,
                   callback: function (value, index, values) {
                     return numberWithCommas(value, true);
                   },
