@@ -28,8 +28,7 @@ const LineChart = React.lazy(() =>
   })),
 );
 
-const updateSearch = debounce((search = '') => {
-  searchState.setState({search});
+const applySearch = debounce((search) => {
   const currentState = state.getState();
   if (search.length) {
     let filteredCountries = currentState.countries.filter((i) =>
@@ -46,6 +45,10 @@ const updateSearch = debounce((search = '') => {
     searchState.setState({filteredCountries: currentState.countries});
   }
 }, 300);
+const updateSearch = (search = '') => {
+  searchState.setState({search});
+  applySearch(search);
+};
 
 const setNewChartData = (sort = 'confirmed') => {
   const chartData = generateBarData(
