@@ -12,8 +12,8 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-const Country = React.lazy(() => import('./Country'));
-const Home = React.lazy(() => import('./Home'));
+const Country = React.lazy(() => import('./components/Country'));
+const Home = React.lazy(() => import('./components/Home'));
 
 const App = () => {
   return (

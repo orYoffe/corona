@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {getData, getTimeSeriesData} from './jsu';
 import {parseData, parseTimeData} from './initData';
-import state from './state';
+import {countryState} from './state';
 
 const LSKey = 'd';
 
@@ -35,13 +35,14 @@ Promise.all([
 getTimeSeriesData('confirmed').then(parseTimeData);
 getTimeSeriesData('deaths').then((deaths) => {
   console.log('--¯_(ツ)_/¯-----------deaths----------', deaths);
-  state.setState({deaths});
+  countryState.setState({deaths});
 });
 getTimeSeriesData('recovered').then((recovered) => {
   console.log('--¯_(ツ)_/¯-----------recovered----------', recovered);
-  state.setState({recovered});
+  countryState.setState({recovered});
 });
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+// ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

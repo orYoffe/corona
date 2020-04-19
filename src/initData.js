@@ -1,5 +1,5 @@
 import {generateBarData, numberWithCommas, colors, format} from './utils';
-import state from './state';
+import state, {timeState, searchState, chartState} from './state';
 
 const getLineChartData = (timeCountries) => {
   const lineChartData = {
@@ -68,7 +68,7 @@ export const parseTimeData = (time) => {
   const timeCountries = sortTime(time).slice(0, 10);
   const lineChartData = getLineChartData(timeCountries);
 
-  state.setState({lineChartData, time});
+  timeState.setState({lineChartData, time});
 };
 export const parseData = (d, j) => {
   const countries = d.countries
@@ -118,10 +118,12 @@ export const parseData = (d, j) => {
     allDeaths: numberWithCommas(d.deaths),
     allRecovered: numberWithCommas(d.recovered),
     countries,
+  });
+  searchState.setState({
     filteredCountries: countries,
   });
   const chartData = generateBarData(countries.slice(0));
-  state.setState({
+  chartState.setState({
     chartData,
   });
 };
