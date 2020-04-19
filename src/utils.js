@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
 import {Text, View} from 'react-native';
+import {white} from './colors';
 
 export const chartList = {
   Cases: 'confirmed',
@@ -56,9 +57,7 @@ export const Box = memo(({children, style}) => (
   <View
     style={[
       {
-        margin: 10,
-        padding: 10,
-        width: '80%',
+        width: '90%',
       },
       style,
     ]}>
@@ -77,7 +76,7 @@ export const L = memo(({t}) => (
 export const V = memo(({t}) => (
   <Text
     style={{
-      color: '#fff',
+      color: white,
     }}>
     {t}
   </Text>

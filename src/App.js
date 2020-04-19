@@ -12,6 +12,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import {white, black} from './colors';
 const Country = React.lazy(() => import('./components/Country'));
 const Home = React.lazy(() => import('./components/Home'));
 
@@ -63,13 +64,13 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#222222',
+    backgroundColor: black,
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',
   },
   title: {
-    color: '#fff',
+    color: white,
     fontWeight: 'bold',
     fontSize: 16,
   },

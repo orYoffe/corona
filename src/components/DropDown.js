@@ -1,8 +1,9 @@
 import React, {memo} from 'react';
 import {View} from 'react-native';
+import {white} from '../colors';
 
 const labelStyle = {
-  color: '#fff',
+  color: white,
   alignSelf: 'center',
   marginTop: 10,
   marginBottom: 10,

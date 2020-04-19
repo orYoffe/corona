@@ -125,8 +125,6 @@ class Mapx extends PureComponent {
                 confirmedWidth =
                   confirmedWidth < ZOOM_5 ? confirmedWidth : ZOOM_5;
               }
-              //   recoveredWidth = recoveredWidth < 1000 ? recoveredWidth : 1000;
-              //   deathsWidth = deathsWidth < 900 ? deathsWidth : 900;
               const outerCircle = {
                 backgroundColor: RED,
                 color: RED,

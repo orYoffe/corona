@@ -8,25 +8,14 @@ import {
 } from 'react-native';
 import {subscribe} from 'jstates-react';
 import debounce from 'debounce';
-import {Link} from 'react-router-dom';
-import state, {timeState, searchState, chartState} from '../state';
+import state, {searchState} from '../state';
 import DropDown from './DropDown';
-import FavButton from './FavButton';
-import {
-  chartList,
-  generateBarData,
-  numberWithCommas,
-  Box,
-  L,
-  V,
-} from '../utils';
+import {FilteredList, CountriesList} from './CountryList';
+import {white, black} from '../colors';
+import {chartList, Box, L, V} from '../utils';
+
 const Map = React.lazy(() => import('./Map'));
-const Chart = React.lazy(() => import('./Chart'));
-const LineChart = React.lazy(() =>
-  import('./Chart').then((module) => ({
-    default: module.LineChart,
-  })),
-);
+const HomeCharts = React.lazy(() => import('./HomeCharts'));
 
 const applySearch = debounce((search) => {
   const currentState = state.getState();
@@ -50,15 +39,6 @@ const updateSearch = (search = '') => {
   applySearch(search);
 };
 
-const setNewChartData = (sort = 'confirmed') => {
-  const chartData = generateBarData(
-    state.getState().countries.slice(0),
-    chartList[sort],
-  );
-
-  chartState.setState({chartData});
-};
-
 const sortCountries = (value) => {
   let property = chartList[value];
   const filteredCountries = searchState
@@ -67,168 +47,6 @@ const sortCountries = (value) => {
     .sort((a, b) => b[property] - a[property]);
   searchState.setState({filteredCountries, sortBy: value});
 };
-
-const Charts = ({chartData, lineChartData}) => {
-  return (
-    <View
-      style={{
-        width: '80%',
-        marginBottom: 20,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <DropDown
-        options={chartList}
-        onSelect={setNewChartData}
-        label="Select chart data"
-      />
-
-      {chartData && (
-        <Suspense
-          fallback={
-            <ActivityIndicator
-              size="large"
-              style={{
-                marginTop: 40,
-                height: 200,
-                alignSelf: 'center',
-              }}
-            />
-          }>
-          <Chart data={chartData} />
-        </Suspense>
-      )}
-      {lineChartData && (
-        <Suspense fallback="">
-          <LineChart data={lineChartData} legend />
-        </Suspense>
-      )}
-    </View>
-  );
-};
-const HomeCharts = subscribe(
-  memo(Charts),
-  [chartState, timeState],
-  (chartState, timeState) => ({
-    lineChartData: timeState.lineChartData,
-    chartData: chartState.chartData,
-  }),
-);
-
-const CountriesList = memo(({list}) => {
-  return (
-    <Box>
-      {!list ? (
-        <ActivityIndicator
-          size="large"
-          style={{
-            marginTop: 40,
-            alignSelf: 'center',
-          }}
-        />
-      ) : list.length < 1 ? (
-        <Text style={[styles.title, styles.text]}>
-          No counteries were found.. try another search term
-        </Text>
-      ) : (
-        list.map(
-          (
-            {
-              country,
-              confirmed,
-              deaths,
-              recovered,
-              population,
-              precentage,
-              active,
-            },
-            index,
-          ) => {
-            return (
-              <Link
-                to={`country/${country}`}
-                key={index}
-                onClick={(e) => {
-                  if (e.target.tagName === 'IMG') {
-                    e.preventDefault();
-                  }
-                }}>
-                <View style={styles.country}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                    }}>
-                    <View>
-                      <Text style={[styles.title, styles.text]}>{country}</Text>
-                      <Text style={styles.text}>
-                        <L t="Cases:" /> <V t={numberWithCommas(confirmed)} />
-                      </Text>
-                      <Text style={styles.subText}>
-                        <L t="Active: " />
-                        <V t={numberWithCommas(active)} />
-                      </Text>
-                      <Text style={styles.subText}>
-                        <L t="Deaths: " />
-                        <V t={numberWithCommas(deaths)} />
-                      </Text>
-                      <Text style={styles.subText}>
-                        <L t="Recovered: " />
-                        <V t={numberWithCommas(recovered)} />
-                      </Text>
-
-                      {!!population && (
-                        <Text style={styles.subText}>
-                          <L t="Population: " />
-                          <V t={numberWithCommas(population)} />
-                        </Text>
-                      )}
-                      {!!precentage && (
-                        <Text style={styles.subText}>
-                          <L t="Population infected: " />
-                          <V t={precentage + '%'} />
-                        </Text>
-                      )}
-                    </View>
-                    <View>
-                      <FavButton country={country} />
-                    </View>
-                  </View>
-                  <Text
-                    style={[
-                      {
-                        alignSelf: 'flex-end',
-                        color: '#fff',
-                        padding: 10,
-                        width: '100%',
-                        backgroundColor: '#00429d',
-                        lineHeight: 35,
-                        borderRadius: 3,
-                        textAlign: 'center',
-                        shadowColor: '#000',
-                        shadowOffset: {width: 0, height: 1},
-                        shadowOpacity: 0.8,
-                        shadowRadius: 2,
-                        elevation: 5,
-                      },
-                    ]}>
-                    See country stats
-                  </Text>
-                </View>
-              </Link>
-            );
-          },
-        )
-      )}
-    </Box>
-  );
-});
-
-const FilteredList = subscribe(CountriesList, searchState, (searchState) => ({
-  list: searchState.filteredCountries,
-}));
 
 const getFavourites = () => {
   let favourites = localStorage.getItem('f');
@@ -243,44 +61,37 @@ const Home = ({lastUpdated, allCases, allDeaths, allRecovered, search}) => {
       .getState()
       .countries.filter((i) => f.indexOf(i.country) !== -1);
     favourites = (
-      <Box
+      <View
         style={{
-          borderBottomColor: '#fff',
+          width: '90%',
+          borderBottomColor: white,
           borderBottomStyle: 'solid',
           borderBottomWidth: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
         }}>
-        <Text style={[styles.title, styles.text]}>
+        <Text
+          style={[
+            styles.title,
+            styles.text,
+            {
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          ]}>
           Quick links to your favourites countries
         </Text>
         <CountriesList list={list} />
-      </Box>
+      </View>
     );
   }
   return (
     <View style={styles.container}>
       {favourites}
       <Suspense
-        fallback={
-          <ActivityIndicator
-            size="large"
-            style={{
-              marginTop: 40,
-              height: 400,
-              alignSelf: 'center',
-            }}
-          />
-        }>
+        fallback={<ActivityIndicator size="large" style={styles.loader} />}>
         <Map />
       </Suspense>
       {lastUpdated && (
-        <Box
-          style={{
-            borderBottomColor: '#fff',
-            borderBottomStyle: 'solid',
-            borderBottomWidth: 1,
-          }}>
+        <Box style={styles.headlines}>
           <Text style={[styles.title, styles.text]}>Worldwide</Text>
           <Text key={`Total cases: ${allCases}`} style={styles.text}>
             <L t="Total cases: " />
@@ -302,18 +113,12 @@ const Home = ({lastUpdated, allCases, allDeaths, allRecovered, search}) => {
           </Text>
         </Box>
       )}
-      <HomeCharts />
+      <Suspense
+        fallback={<ActivityIndicator size="large" style={styles.loader} />}>
+        <HomeCharts />
+      </Suspense>
       <TextInput
-        style={{
-          height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          backgroundColor: '#ccc',
-          width: '80%',
-          borderRadius: 3,
-          paddingLeft: 8,
-          paddingRight: 8,
-        }}
+        style={styles.search}
         placeholder="Type Country Name Here..."
         onChangeText={updateSearch}
         value={search || ''}
@@ -334,16 +139,31 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   title: {
-    color: '#fff',
+    color: white,
     fontWeight: 'bold',
     fontSize: 16,
   },
+  headlines: {
+    borderBottomColor: white,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+  },
+  search: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    backgroundColor: '#ccc',
+    width: '90%',
+    borderRadius: 3,
+    paddingLeft: 8,
+    paddingRight: 8,
+  },
   text: {
-    color: '#fff',
+    color: white,
     marginBottom: 5,
   },
   subText: {
-    color: '#fff',
+    color: white,
     marginBottom: 5,
     fontSize: 10,
   },
@@ -352,18 +172,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
     marginBottom: 10,
-    borderBottomColor: '#fff',
+    borderBottomColor: white,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
     backgroundColor: 'darkcyan',
     borderRadius: 3,
     padding: 10,
 
-    shadowColor: '#000',
+    shadowColor: black,
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+  },
+  loader: {
+    marginTop: 40,
+    height: 400,
+    alignSelf: 'center',
   },
 });
 

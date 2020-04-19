@@ -5,6 +5,7 @@ import {subscribe} from 'jstates-react';
 import {LineChart, BarChart} from './Chart';
 import {format, numberWithCommas, Box, L, V} from '../utils';
 import state, {timeState, countryState} from '../state';
+import {white, black} from '../colors';
 import FavButton from './FavButton';
 
 const RED = '#f00c32';
@@ -18,7 +19,6 @@ const CountryBarChart = memo(({confirmed, recovered, deaths, country}) => {
     datasets: [
       {
         label: country,
-        // backgroundColor: 'rgba(75,192,192,1)',
         borderColor: 'rgba(0,0,0,1)',
         borderWidth: 2,
         data: [confirmed, recovered, deaths],
@@ -176,7 +176,7 @@ const Country = (props) => {
         <>
           <Box
             style={{
-              borderBottomColor: '#fff',
+              borderBottomColor: white,
               borderBottomStyle: 'solid',
               borderBottomWidth: 1,
             }}>
@@ -219,7 +219,7 @@ const Country = (props) => {
             </Text>
           </Box>
 
-          <View style={{width: '80%', marginBottom: 20}}>
+          <View style={{width: '90%', marginBottom: 20}}>
             {!!timeData && <LineChart data={timeData} />}
             {!!dailyInfections && (
               <BarChart data={dailyInfections} colors={redColors} title />
@@ -237,21 +237,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: '100%',
     width: '100%',
-    backgroundColor: '#222222',
+    backgroundColor: black,
   },
   title: {
-    color: '#fff',
+    color: white,
     fontWeight: 'bold',
     fontSize: 16,
   },
   text: {
-    color: '#fff',
+    color: white,
     marginBottom: 5,
   },
   country: {
     width: '100%',
     marginBottom: 10,
-    borderBottomColor: '#fff',
+    borderBottomColor: white,
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B95E0',
   },
   buttonText: {
-    color: '#fff',
+    color: white,
     fontWeight: 'bold',
     fontSize: 16,
   },

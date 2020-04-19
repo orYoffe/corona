@@ -24,8 +24,6 @@ const FavButton = ({country}) => {
       onPress={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        // e.nativeEvent.preventDefault();
-        // e.nativeEvent.stopPropagation();
         let favourites = localStorage.getItem('f');
         favourites = favourites && JSON.parse(favourites);
         if (Array.isArray(favourites)) {
@@ -49,7 +47,7 @@ const FavButton = ({country}) => {
         style={{
           height: 20,
           width: 20,
-          marginTop: inFavourites ? 0 : -1,
+          marginTop: inFavourites ? 0 : -2,
         }}
         source={{
           uri: require(`../${inFavourites ? 'star' : 'emptyStar'}.png`),
