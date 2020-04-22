@@ -8,7 +8,7 @@
     "web": "node scripts/start.js",
     "test:web": "node scripts/test.js",
     "cyo": "./node_modules/.bin/cypress open",
-    "cyr": "./node_modules/.bin/cypress run",
+    "cyr": "npm run web & ./node_modules/.bin/cypress run",
     "builds": "node scripts/build.js && npx babel-node ./genData.js && rm -rf ./docs/* && cp -R ./build/. ./docs/",
     "start:native": "react-native start",
     "start-clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm start -- --reset-cache",
